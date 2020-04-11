@@ -59,6 +59,9 @@ class RegistryKey:
         key.hkey = hkey
         key.path = path
         return key
+    
+    def create(self) -> None:
+        winreg.CreateKeyEx(self.hkey.id_, str(self.path), 0)
 
     def delete(self, recursive: bool=True) -> None:
         if recursive:
