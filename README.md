@@ -45,3 +45,11 @@ For example, you would get the wallpaper path by doing:
 ```python
 wallpaper_path = RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop')['WallPaper']
 ```
+
+## Setting values
+
+Setting values works in the same way:
+
+```python
+RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop')['WallPaper'] = r'D:\Pictures\wallpaper.png'
+```
