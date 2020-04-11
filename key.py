@@ -81,7 +81,7 @@ class RegistryKey:
         winreg.SetValueEx(self.make_handle(), key, 0, value.type_, value.value)
 
     def __delitem__(self, key: str) -> None:
-        pass
+        winreg.DeleteValue(self.make_handle(), key)
 
     def __repr__(self) -> str:
         return f'{type(self).__name__}({str(self.full_path)})'
