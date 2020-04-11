@@ -1,10 +1,13 @@
 from __future__ import annotations
 from typing import NewType, Any, Union, Sequence, Iterator
-from pathlib import PurePath
+from pathlib import PureWindowsPath
 import winreg
 
 Hkey = NewType('Hkey', int)
-RegistryPath = NewType('RegistryPath', PurePath)
+
+
+class RegistryPath(PureWindowsPath):
+    pass
 
 
 class RegistryKey:
@@ -24,7 +27,7 @@ class RegistryKey:
             raise OSError('The specified hkey is not valid')
         self.hkey = getattr(winreg, hkey_str)
 
-        self.path = RegistryPath.joinpath(*path.parts[1:])
+        self.path = RegistryPath().joinpath(*path.parts[1:])
 
     def delete(self) -> None:
         pass
