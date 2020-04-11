@@ -67,7 +67,7 @@ class RegistryKey:
         winreg.DeleteKeyEx(self.hkey.id_, str(self.path))
 
     def make_handle(self) -> winreg.HKEYType:
-        return winreg.OpenKeyEx(self.hkey.id_, str(self.path))
+        return winreg.OpenKeyEx(self.hkey.id_, str(self.path), 0, winreg.KEY_ALL_ACCESS)
 
     def __len__(self) -> int:
         return winreg.QueryInfoKey(self.make_handle())[self.QueryInfoReturnMembers.VALUES_AMOUNT]
@@ -77,8 +77,8 @@ class RegistryKey:
         type_ = RegistryValueType(data[self.QueryValueReturnMembers.TYPE])
         return RegistryValue(data[self.QueryValueReturnMembers.VALUE], type_)
 
-    def __setitem__(self, key: str, value: Any) -> None:
-        pass
+    def __setitem__(self, key: str, value: RegistryValue) -> None:
+        winreg.SetValueEx(self.make_handle(), key, 0, value.type_, value.value)
 
     def __delitem__(self, key: str) -> None:
         pass
