@@ -3,7 +3,7 @@ from typing import NewType, Any, Union, Iterator
 from pathlib import PureWindowsPath
 import winreg
 
-Hkey = NewType('Hkey', int)
+from hkey import Hkey
 
 
 class RegistryPath(PureWindowsPath):
@@ -17,7 +17,7 @@ class RegistryKey:
 
     @property
     def handle(self) -> winreg.HKEYType:
-        return winreg.OpenKeyEx(self.hkey, str(self.path))
+        return winreg.OpenKeyEx(self.hkey.id_, str(self.path))
 
     @property
     def subkeys(self) -> Iterator[RegistryKey]:
@@ -34,14 +34,10 @@ class RegistryKey:
     def __init__(self, path: Union[str, RegistryPath]=None) -> None:
         if not path:
             return
-        
+
         path = RegistryPath(path)
 
-        hkey_str = path.parts[0]
-        if not hkey_str.startswith('HKEY_') or not hasattr(winreg, hkey_str):
-            raise OSError('The specified hkey is not valid')
-        self.hkey = getattr(winreg, hkey_str)
-
+        self.hkey = Hkey(path.parts[0])
         self.path = RegistryPath().joinpath(*path.parts[1:])
     
     @staticmethod
