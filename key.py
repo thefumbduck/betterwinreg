@@ -22,10 +22,12 @@ class RegistryKey:
     @property
     def subkeys(self) -> Iterator[RegistryKey]:
         from itertools import count
+
+        handle = self.make_handle()
         
         try:
             for i in count():
-                key_name = winreg.EnumKey(self.make_handle(), i)
+                key_name = winreg.EnumKey(handle, i)
                 key = RegistryKey.from_hkey_and_path(self.hkey, self.path / key_name)
                 yield key
         except OSError:
