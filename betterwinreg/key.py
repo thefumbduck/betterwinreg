@@ -5,8 +5,8 @@ from enum import IntEnum
 from pathlib import PureWindowsPath
 from typing import Any, Iterator, Union
 
-from hkey import Hkey
-from value import RegistryValue, RegistryValueType
+from betterwinreg.hkey import Hkey
+from betterwinreg.value import RegistryValue, RegistryValueType
 
 
 class RegistryPath(PureWindowsPath):
