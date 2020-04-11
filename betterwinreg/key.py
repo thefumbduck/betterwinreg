@@ -122,4 +122,4 @@ class RegistryKey:
         winreg.DeleteValue(self.make_handle(False), key)
 
     def __repr__(self) -> str:
-        return f'{type(self).__name__}({str(self.full_path)})'
+        return f"{type(self).__name__}('{str(self.full_path)}')"
