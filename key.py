@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import NewType, Any, Union, Sequence, Iterator
 from pathlib import PurePath
 import winreg
