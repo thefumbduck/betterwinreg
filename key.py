@@ -16,6 +16,10 @@ class RegistryKey:
     path: RegistryPath
 
     @property
+    def handle(self) -> winreg.HKEYType:
+        return winreg.OpenKeyEx(self.hkey, str(self.path))
+
+    @property
     def subkeys(self) -> Sequence[RegistryKey]:
         pass
 
