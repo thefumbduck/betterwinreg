@@ -10,6 +10,10 @@ class Hkey:
     def __init__(self, name: str) -> Hkey:
         self.name = name
 
-        if not name.startswith('HKEY_') or not hasattr(winreg, name):
+        if not self.is_valid(name):
             raise OSError('The specified hkey is not valid')
         self.id_ = getattr(winreg, name)
+    
+    @staticmethod
+    def is_valid(name: str) -> bool:
+        return name.startswith('HKEY_') and hasattr(winreg, name)
