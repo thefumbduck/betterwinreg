@@ -56,7 +56,7 @@ RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop')['WallPaper'] = r'D:\Pictu
 
 ## Navigating through the registry
 
-The main ways to move through the registry are using the `subkeys` and `parent` properties.
+The main ways to move through the registry are using the `subkeys` and `parent` properties, and concatenating in a Path-like way.
 
 ```python
 >>> RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop').parent
@@ -68,4 +68,11 @@ RegistryKey('HKEY_CURRENT_USER\Control Panel')
 ```python
 >>> list(RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop').subkeys)
 [RegistryKey(HKEY_CURRENT_USER\Control Panel\Desktop\Colors), RegistryKey(HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics), RegistryKey(HKEY_CURRENT_USER\Control Panel\Desktop\MuiCached)]
+```
+
+You can also join `RegistryKey`s in a `Path`-like manner:
+
+```python
+>>> RegistryKey('HKEY_CURRENT_USER\Control Panel') / 'Desktop'
+RegistryKey(HKEY_CURRENT_USER\Control Panel\Desktop)
 ```
