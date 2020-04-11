@@ -20,16 +20,12 @@ class RegistryKey:
         return RegistryPath(self.hkey.name) / self.path
 
     @property
-    def handle(self) -> winreg.HKEYType:
-        return winreg.OpenKeyEx(self.hkey.id_, str(self.path))
-
-    @property
     def subkeys(self) -> Iterator[RegistryKey]:
         from itertools import count
         
         try:
             for i in count():
-                key_name = winreg.EnumKey(self.handle, i)
+                key_name = winreg.EnumKey(self.make_handle(), i)
                 key = RegistryKey.from_hkey_and_path(self.hkey, self.path / key_name)
                 yield key
         except OSError:
@@ -53,6 +49,9 @@ class RegistryKey:
 
     def delete(self) -> None:
         pass
+
+    def make_handle(self) -> winreg.HKEYType:
+        return winreg.OpenKeyEx(self.hkey.id_, str(self.path))
 
     def __len__(self) -> int:
         pass
