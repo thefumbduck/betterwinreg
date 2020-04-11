@@ -91,6 +91,9 @@ class RegistryKey:
             for subkey in self.subkeys:
                 subkey.delete()
         winreg.DeleteKeyEx(self.hkey.id_, str(self.path))
+    
+    def flush(self) -> None:
+        winreg.FlushKey(self.make_handle())
 
     def make_handle(self, readonly: bool = True) -> winreg.HKEYType:
         access = winreg.KEY_READ if readonly else winreg.KEY_ALL_ACCESS
