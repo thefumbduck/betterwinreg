@@ -34,7 +34,7 @@ class RegistryKey:
     def subkeys(self) -> Iterator[RegistryKey]:
         from itertools import count
 
-        handle = self.make_handle()
+        handle = self.make_handle(True)
         
         try:
             for i in count():
@@ -69,22 +69,23 @@ class RegistryKey:
                 subkey.delete()
         winreg.DeleteKeyEx(self.hkey.id_, str(self.path))
 
-    def make_handle(self) -> winreg.HKEYType:
-        return winreg.OpenKeyEx(self.hkey.id_, str(self.path), 0, winreg.KEY_ALL_ACCESS)
+    def make_handle(self, readonly: bool=True) -> winreg.HKEYType:
+        access = winreg.KEY_READ if readonly else winreg.KEY_ALL_ACCESS
+        return winreg.OpenKeyEx(self.hkey.id_, str(self.path), 0, access)
 
     def __len__(self) -> int:
         return winreg.QueryInfoKey(self.make_handle())[self.QueryInfoReturnMembers.VALUES_AMOUNT]
 
     def __getitem__(self, key: str) -> RegistryValue:
-        data = winreg.QueryValueEx(self.make_handle(), key)
+        data = winreg.QueryValueEx(self.make_handle(True), key)
         type_ = RegistryValueType(data[self.QueryValueReturnMembers.TYPE])
         return RegistryValue(data[self.QueryValueReturnMembers.VALUE], type_)
 
     def __setitem__(self, key: str, value: RegistryValue) -> None:
-        winreg.SetValueEx(self.make_handle(), key, 0, value.type_, value.value)
+        winreg.SetValueEx(self.make_handle(False), key, 0, value.type_, value.value)
 
     def __delitem__(self, key: str) -> None:
-        winreg.DeleteValue(self.make_handle(), key)
+        winreg.DeleteValue(self.make_handle(False), key)
 
     def __repr__(self) -> str:
         return f'{type(self).__name__}({str(self.full_path)})'
