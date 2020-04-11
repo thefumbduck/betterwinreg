@@ -1,8 +1,9 @@
 from __future__ import annotations
-from typing import Any, Union, Iterator
-from pathlib import PureWindowsPath
-from enum import IntEnum
+
 import winreg
+from enum import IntEnum
+from pathlib import PureWindowsPath
+from typing import Any, Iterator, Union
 
 from hkey import Hkey
 from value import RegistryValue, RegistryValueType

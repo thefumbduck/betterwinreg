@@ -1,6 +1,7 @@
-from typing import Any, NamedTuple
-from enum import IntEnum
 import winreg
+from enum import IntEnum
+from typing import Any, NamedTuple
+
 
 # Manually write these to have autocomplete
 class RegistryValueType(IntEnum):
