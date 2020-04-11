@@ -14,6 +14,11 @@ class RegistryPath(PureWindowsPath):
 
 class RegistryKey:
 
+    class EnumValueReturnMembers(IntEnum):
+        NAME = 0
+        VALUE = 1
+        TYPE = 2
+
     class QueryInfoReturnMembers(IntEnum):
         SUBKEYS_AMOUNT = 0
         VALUES_AMOUNT = 1
@@ -74,7 +79,20 @@ class RegistryKey:
         return winreg.OpenKeyEx(self.hkey.id_, str(self.path), 0, access)
 
     def __len__(self) -> int:
-        return winreg.QueryInfoKey(self.make_handle())[self.QueryInfoReturnMembers.VALUES_AMOUNT]
+        return winreg.QueryInfoKey(self.make_handle(True))[self.QueryInfoReturnMembers.VALUES_AMOUNT]
+    
+    def __iter__(self) -> Iterator[RegistryValue]:
+        from itertools import count
+
+        handle = self.make_handle(True)
+
+        try:
+            for i in count():
+                data = winreg.EnumValue(handle, i)
+                type_ = RegistryValueType(data[self.EnumValueReturnMembers.TYPE])
+                yield (data[self.EnumValueReturnMembers.NAME], RegistryValue(data[self.EnumValueReturnMembers.VALUE], type_))
+        except OSError:
+            return
 
     def __getitem__(self, key: str) -> RegistryValue:
         data = winreg.QueryValueEx(self.make_handle(True), key)
