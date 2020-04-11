@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import NewType, Any, Union, Sequence, Iterator
+from typing import NewType, Any, Union, Iterator
 from pathlib import PureWindowsPath
 import winreg
 
@@ -20,8 +20,16 @@ class RegistryKey:
         return winreg.OpenKeyEx(self.hkey, str(self.path))
 
     @property
-    def subkeys(self) -> Sequence[RegistryKey]:
-        pass
+    def subkeys(self) -> Iterator[RegistryKey]:
+        from itertools import count
+        
+        try:
+            for i in count():
+                key_name = winreg.EnumKey(self.handle, i)
+                key = RegistryKey.from_hkey_and_path(self.hkey, self.path / key_name)
+                yield key
+        except OSError:
+            return
 
     def __init__(self, path: Union[str, RegistryPath]=None) -> None:
         if not path:
