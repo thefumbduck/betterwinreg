@@ -32,6 +32,9 @@ class RegistryKey:
     hkey: Hkey
     path: RegistryPath
 
+    handle: winreg.HKEYType = None
+    is_handle_readonly: bool = True
+
     @property
     def full_path(self) -> RegistryPath:
         return RegistryPath(self.hkey.name) / self.path
@@ -44,11 +47,11 @@ class RegistryKey:
     def subkeys(self) -> Iterator[RegistryKey]:
         from itertools import count
 
-        handle = self.make_handle(True)
+        self.ensure_handle_exists(True)
 
         try:
             for i in count():
-                key_name = winreg.EnumKey(handle, i)
+                key_name = winreg.EnumKey(self.handle, i)
                 key = RegistryKey.from_hkey_and_path(
                     self.hkey, self.path / key_name)
                 yield key
@@ -91,25 +94,35 @@ class RegistryKey:
             for subkey in self.subkeys:
                 subkey.delete()
         winreg.DeleteKeyEx(self.hkey.id_, str(self.path))
+    
+    def flush(self) -> None:
+        self.ensure_handle_exists(False)
+        winreg.FlushKey(self.handle)
 
     def make_handle(self, readonly: bool = True) -> winreg.HKEYType:
         access = winreg.KEY_READ if readonly else winreg.KEY_ALL_ACCESS
         return winreg.OpenKeyEx(self.hkey.id_, str(self.path), 0, access)
+    
+    def ensure_handle_exists(self, readonly: bool = True) -> None:
+        if not self.handle or (not readonly and self.is_handle_readonly):
+            self.handle = self.make_handle(readonly)
+        self.is_handle_readonly = readonly
 
     def __truediv__(self, other: Union[str, RegistryPath]) -> RegistryKey:
         return RegistryKey.from_hkey_and_path(self.hkey, self.path / other)
 
     def __len__(self) -> int:
-        return winreg.QueryInfoKey(self.make_handle(True))[self.QueryInfoReturnMembers.VALUES_AMOUNT]
+        self.ensure_handle_exists(True)
+        return winreg.QueryInfoKey(self.handle)[self.QueryInfoReturnMembers.VALUES_AMOUNT]
 
     def __iter__(self) -> Iterator[RegistryValue]:
         from itertools import count
 
-        handle = self.make_handle(True)
+        self.ensure_handle_exists(True)
 
         try:
             for i in count():
-                data = winreg.EnumValue(handle, i)
+                data = winreg.EnumValue(self.handle, i)
                 type_ = RegistryValueType(
                     data[self.EnumValueReturnMembers.TYPE])
                 yield (data[self.EnumValueReturnMembers.NAME], RegistryValue(data[self.EnumValueReturnMembers.VALUE], type_))
@@ -124,16 +137,19 @@ class RegistryKey:
         return True
 
     def __getitem__(self, key: str) -> RegistryValue:
-        data = winreg.QueryValueEx(self.make_handle(True), key)
+        self.ensure_handle_exists(True)
+        data = winreg.QueryValueEx(self.handle, key)
         type_ = RegistryValueType(data[self.QueryValueReturnMembers.TYPE])
         return RegistryValue(data[self.QueryValueReturnMembers.VALUE], type_)
 
     def __setitem__(self, key: str, value: RegistryValue) -> None:
-        winreg.SetValueEx(self.make_handle(False), key,
+        self.ensure_handle_exists(False)
+        winreg.SetValueEx(self.handle, key,
                           0, value.type_, value.value)
 
     def __delitem__(self, key: str) -> None:
-        winreg.DeleteValue(self.make_handle(False), key)
+        self.ensure_handle_exists(False)
+        winreg.DeleteValue(self.handle, key)
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}('{str(self.full_path)}')"
