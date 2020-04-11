@@ -55,8 +55,13 @@ class RegistryKey:
 
         path = RegistryPath(path)
 
-        self.hkey = Hkey(path.parts[0])
-        self.path = RegistryPath().joinpath(*path.parts[1:])
+        # If path starts with 'Computer/', we remove it to standardize it
+        path_parts = path.parts
+        if path_parts[0] == 'Computer':
+            path_parts = path_parts[1:]
+        
+        self.hkey = Hkey(path_parts[0])
+        self.path = RegistryPath().joinpath(*path_parts[1:])
     
     @staticmethod
     def from_hkey_and_path(hkey: Hkey, path: RegistryPath) -> RegistryKey:
