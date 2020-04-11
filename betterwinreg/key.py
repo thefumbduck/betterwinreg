@@ -108,6 +108,13 @@ class RegistryKey:
                 yield (data[self.EnumValueReturnMembers.NAME], RegistryValue(data[self.EnumValueReturnMembers.VALUE], type_))
         except OSError:
             return
+    
+    def __contains__(self, item: str) -> bool:
+        try:
+            _ = self[item]
+        except FileNotFoundError:
+            return False
+        return True
 
     def __getitem__(self, key: str) -> RegistryValue:
         data = winreg.QueryValueEx(self.make_handle(True), key)
