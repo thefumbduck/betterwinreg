@@ -76,6 +76,13 @@ class RegistryKey:
         key.path = path
         return key
 
+    def is_key(self) -> bool:
+        try:
+            _ = self.make_handle(True)
+        except FileNotFoundError:
+            return False
+        return True
+
     def create(self) -> None:
         winreg.CreateKeyEx(self.hkey.id_, str(self.path), 0)
 
