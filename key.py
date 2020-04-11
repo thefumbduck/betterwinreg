@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import NewType, Any, Union, Iterator
+from typing import Any, Union, Iterator
 from pathlib import PureWindowsPath
 from enum import Enum
 import winreg
