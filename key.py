@@ -1,10 +1,11 @@
 from __future__ import annotations
 from typing import Any, Union, Iterator
 from pathlib import PureWindowsPath
-from enum import Enum
+from enum import IntEnum
 import winreg
 
 from hkey import Hkey
+from value import RegistryValue, RegistryValueType
 
 
 class RegistryPath(PureWindowsPath):
@@ -13,10 +14,14 @@ class RegistryPath(PureWindowsPath):
 
 class RegistryKey:
 
-    class QueryInfoReturnMembers(Enum):
+    class QueryInfoReturnMembers(IntEnum):
         SUBKEYS_AMOUNT = 0
         VALUES_AMOUNT = 1
         LAST_MODIFICATION = 2
+    
+    class QueryValueReturnMembers(IntEnum):
+        VALUE = 0
+        TYPE = 1
 
     hkey: Hkey
     path: RegistryPath
@@ -67,8 +72,10 @@ class RegistryKey:
     def __len__(self) -> int:
         return winreg.QueryInfoKey(self.make_handle())[self.QueryInfoReturnMembers.VALUES_AMOUNT]
 
-    def __getitem__(self, key: str) -> Any:
-        pass
+    def __getitem__(self, key: str) -> RegistryValue:
+        data = winreg.QueryValueEx(self.make_handle(), key)
+        type_ = RegistryValueType(data[self.QueryValueReturnMembers.TYPE])
+        return RegistryValue(data[self.QueryValueReturnMembers.VALUE], type_)
 
     def __setitem__(self, key: str, value: Any) -> None:
         pass
