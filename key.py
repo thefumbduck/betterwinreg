@@ -16,6 +16,10 @@ class RegistryKey:
     path: RegistryPath
 
     @property
+    def full_path(self) -> RegistryPath:
+        return RegistryPath(self.hkey.name) / self.path
+
+    @property
     def handle(self) -> winreg.HKEYType:
         return winreg.OpenKeyEx(self.hkey.id_, str(self.path))
 
@@ -61,3 +65,6 @@ class RegistryKey:
 
     def __delitem__(self, key: str) -> None:
         pass
+
+    def __repr__(self) -> str:
+        return f'{type(self).__name__}({str(self.full_path)})'
