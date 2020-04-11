@@ -35,7 +35,7 @@ class RegistryKey:
     @property
     def full_path(self) -> RegistryPath:
         return RegistryPath(self.hkey.name) / self.path
-    
+
     @property
     def parent(self) -> RegistryKey:
         return RegistryKey.from_hkey_and_path(self.hkey, self.path.parent)
@@ -88,6 +88,9 @@ class RegistryKey:
     def make_handle(self, readonly: bool = True) -> winreg.HKEYType:
         access = winreg.KEY_READ if readonly else winreg.KEY_ALL_ACCESS
         return winreg.OpenKeyEx(self.hkey.id_, str(self.path), 0, access)
+
+    def __truediv__(self, other: Union[str, RegistryPath]) -> RegistryKey:
+        return RegistryKey.from_hkey_and_path(self.hkey, self.path / other)
 
     def __len__(self) -> int:
         return winreg.QueryInfoKey(self.make_handle(True))[self.QueryInfoReturnMembers.VALUES_AMOUNT]
