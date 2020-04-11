@@ -19,7 +19,10 @@ class RegistryKey:
     def subkeys(self) -> Sequence[RegistryKey]:
         pass
 
-    def __init__(self, path: Union[str, RegistryPath]) -> None:
+    def __init__(self, path: Union[str, RegistryPath]=None) -> None:
+        if not path:
+            return
+        
         path = RegistryPath(path)
 
         hkey_str = path.parts[0]
@@ -28,6 +31,13 @@ class RegistryKey:
         self.hkey = getattr(winreg, hkey_str)
 
         self.path = RegistryPath().joinpath(*path.parts[1:])
+    
+    @staticmethod
+    def from_hkey_and_path(hkey: Hkey, path: RegistryPath) -> RegistryKey:
+        key = RegistryKey()
+        key.hkey = hkey
+        key.path = path
+        return key
 
     def delete(self) -> None:
         pass
