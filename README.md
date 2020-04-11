@@ -67,12 +67,12 @@ RegistryKey('HKEY_CURRENT_USER\Control Panel')
 
 ```python
 >>> list(RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop').subkeys)
-[RegistryKey(HKEY_CURRENT_USER\Control Panel\Desktop\Colors), RegistryKey(HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics), RegistryKey(HKEY_CURRENT_USER\Control Panel\Desktop\MuiCached)]
+[RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop\Colors'), RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics'), RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop\MuiCached')]
 ```
 
 You can also join `RegistryKey`s in a `Path`-like manner:
 
 ```python
 >>> RegistryKey('HKEY_CURRENT_USER\Control Panel') / 'Desktop'
-RegistryKey(HKEY_CURRENT_USER\Control Panel\Desktop)
+RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop')
 ```
