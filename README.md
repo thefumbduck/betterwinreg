@@ -53,3 +53,19 @@ Setting values works in the same way:
 ```python
 RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop')['WallPaper'] = r'D:\Pictures\wallpaper.png'
 ```
+
+## Navigating through the registry
+
+The main ways to move through the registry are using the `subkeys` and `parent` properties.
+
+```python
+>>> RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop').parent
+RegistryKey('HKEY_CURRENT_USER\Control Panel')
+```
+
+`subkeys` is a generator, so if you need to print them or iterate over them more than once, you need to convert them to a list:
+
+```python
+>>> list(RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop').subkeys)
+[RegistryKey(HKEY_CURRENT_USER\Control Panel\Desktop\Colors), RegistryKey(HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics), RegistryKey(HKEY_CURRENT_USER\Control Panel\Desktop\MuiCached)]
+```
