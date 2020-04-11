@@ -46,12 +46,13 @@ For example, you would get the wallpaper path by doing:
 wallpaper_path = RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop')['WallPaper']
 ```
 
-## Setting values
+## Setting and deleting values
 
 Setting values works in the same way:
 
 ```python
 RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop')['WallPaper'] = r'D:\Pictures\wallpaper.png'
+del RegistryKey('HKEY_CLASSES_ROOT\Directory\Shell\git_shell')
 ```
 
 ## Navigating through the registry
