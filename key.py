@@ -47,8 +47,11 @@ class RegistryKey:
         key.path = path
         return key
 
-    def delete(self) -> None:
-        pass
+    def delete(self, recursive: bool=True) -> None:
+        if recursive:
+            for subkey in self.subkeys:
+                subkey.delete()
+        winreg.DeleteKeyEx(self.hkey.id_, str(self.path))
 
     def make_handle(self) -> winreg.HKEYType:
         return winreg.OpenKeyEx(self.hkey.id_, str(self.path))
