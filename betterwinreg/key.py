@@ -35,6 +35,10 @@ class RegistryKey:
     @property
     def full_path(self) -> RegistryPath:
         return RegistryPath(self.hkey.name) / self.path
+    
+    @property
+    def parent(self) -> RegistryKey:
+        return RegistryKey.from_hkey_and_path(self.hkey, self.path.parent)
 
     @property
     def subkeys(self) -> Iterator[RegistryKey]:
