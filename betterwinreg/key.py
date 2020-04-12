@@ -128,6 +128,13 @@ class RegistryKey:
         self.ensure_handle_exists(False)
         winreg.FlushKey(self.handle)
 
+    def has_default_value(self) -> bool:
+        try:
+            _ = self.default_value
+        except FileNotFoundError:
+            return False
+        return True
+
     def make_handle(self, readonly: bool = True) -> winreg.HKEYType:
         access = winreg.KEY_READ if readonly else winreg.KEY_ALL_ACCESS
         return winreg.OpenKeyEx(self.hkey.id_, str(self.path), 0, access)
