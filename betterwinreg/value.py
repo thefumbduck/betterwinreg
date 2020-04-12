@@ -24,7 +24,7 @@ class RegistryValue:
     winreg_type: RegistryValueType = None
 
 
-def get_instance(value: Union[int, str, bytearray], winreg_type: RegistryValueType) -> RegistryValue:
+def get_registry_instance(value: Union[int, str, bytearray], winreg_type: RegistryValueType) -> RegistryValue:
     if value is None:
         return None
 
