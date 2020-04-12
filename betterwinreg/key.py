@@ -3,7 +3,7 @@ from __future__ import annotations
 import winreg
 from enum import IntEnum
 from pathlib import PureWindowsPath
-from typing import Any, Iterator, Union
+from typing import Any, Iterator, List, Union
 
 from betterwinreg.hkey import Hkey
 from betterwinreg.value import RegistryValue, RegistryValueType
@@ -44,19 +44,19 @@ class RegistryKey:
         return RegistryKey.from_hkey_and_path(self.hkey, self.path.parent)
 
     @property
-    def subkeys(self) -> Iterator[RegistryKey]:
+    def subkeys(self) -> List[RegistryKey]:
         from itertools import count
 
         self.ensure_handle_exists(True)
-
+        subkeys = []
         try:
             for i in count():
                 key_name = winreg.EnumKey(self.handle, i)
                 key = RegistryKey.from_hkey_and_path(
                     self.hkey, self.path / key_name)
-                yield key
+                subkeys.append(key)
         except OSError:
-            return
+            return subkeys
 
     def __init__(self, path: Union[str, RegistryPath] = None) -> None:
         if not path:
