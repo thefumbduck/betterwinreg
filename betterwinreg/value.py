@@ -1,6 +1,6 @@
 import winreg
 from enum import IntEnum
-from typing import Any
+from typing import Union, List
 
 
 # Manually write these to have autocomplete
@@ -24,7 +24,14 @@ class RegistryValue:
     winreg_type: RegistryValueType = None
 
 
-class Binary(RegistryValue, bytes):
+def get_instance(value: Union[int, str, bytearray], winreg_type: RegistryValueType) -> RegistryValue:
+    for type_ in registry_value_types:
+        if type_.winreg_type == winreg_type:
+            return type_(value)
+    raise TypeError(f'{value} cannot be converted to {winreg_type.name}')
+
+
+class Binary(RegistryValue, bytearray):
     winreg_type: RegistryValueType = RegistryValueType.BINARY
 
 
@@ -56,17 +63,33 @@ class MultiSz(RegistryValue, str):
     winreg_type: RegistryValueType = RegistryValueType.MULTI_SZ
 
 
-class Link(RegistryValue, bytes):
+class Link(RegistryValue, bytearray):
     winreg_type: RegistryValueType = RegistryValueType.LINK
 
 
-class ResourceList(RegistryValue, bytes):
+class ResourceList(RegistryValue, bytearray):
     winreg_type: RegistryValueType = RegistryValueType.RESOURCE_LIST
 
 
-class FullResourceDescriptor(RegistryValue, bytes):
+class FullResourceDescriptor(RegistryValue, bytearray):
     winreg_type: RegistryValueType = RegistryValueType.FULL_RESOURCE_DESCRIPTOR
 
 
-class ResourceRequirementsList(RegistryValue, bytes):
+class ResourceRequirementsList(RegistryValue, bytearray):
     winreg_type: RegistryValueType = RegistryValueType.RESOURCE_REQUIREMENTS_LIST
+
+
+def get_registry_value_types() -> List[type]:
+    import sys, inspect
+
+    this_module = sys.modules[__name__]
+
+    result = []
+    for _, obj in inspect.getmembers(this_module):
+        if inspect.isclass(obj) and issubclass(obj, RegistryValue):
+            result.append(obj)
+
+    return result
+
+
+registry_value_types: List[type] = get_registry_value_types()
