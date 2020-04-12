@@ -15,6 +15,7 @@ setup(
     description='A wrapper that makes working with winreg easier',
     long_description=README,
     long_description_content_type='text/markdown',
+    keywords='winreg windows registry oop',
 
     url='https://github.com/thefumbduck/betterwinreg',
     project_urls={
