@@ -43,26 +43,20 @@ class RegistryKey:
     def parent(self) -> RegistryKey:
         return RegistryKey.from_hkey_and_path(self.hkey, self.path.parent)
 
-    _subkeys: List[RegistryKey] = None
-
     @property
     def subkeys(self) -> Iterator[RegistryKey]:
         from itertools import count
 
-        if self._subkeys:
-            return self._subkeys
-
-        else:
-            self.ensure_handle_exists(True)
-            self._subkeys = []
-            try:
-                for i in count():
-                    key_name = winreg.EnumKey(self.handle, i)
-                    key = RegistryKey.from_hkey_and_path(
-                        self.hkey, self.path / key_name)
-                    self._subkeys.append(key)
-            except OSError:
-                return self._subkeys
+        self.ensure_handle_exists(True)
+        subkeys = []
+        try:
+            for i in count():
+                key_name = winreg.EnumKey(self.handle, i)
+                key = RegistryKey.from_hkey_and_path(
+                    self.hkey, self.path / key_name)
+                subkeys.append(key)
+        except OSError:
+            return subkeys
 
     def __init__(self, path: Union[str, RegistryPath] = None) -> None:
         if not path:
