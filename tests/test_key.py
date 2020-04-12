@@ -47,6 +47,14 @@ class TestKeyManipulation:
         key.flush()
         assert 'test' not in key
 
+    def test_default_value(self):
+        key = RegistryKey(self.SET_TEST_KEY_PATH)
+        key.default_value = Dword(42)
+        assert key.default_value == key[''] == 42
+        del key.default_value
+        assert '' not in key.values
+        key.delete()
+
     def test_del_key(self):
         key = RegistryKey(self.SET_TEST_KEY_PATH)
         if not key.is_key():
