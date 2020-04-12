@@ -1,6 +1,6 @@
 import winreg
 from enum import IntEnum
-from typing import Any, NamedTuple
+from typing import Any
 
 
 # Manually write these to have autocomplete
@@ -20,7 +20,6 @@ class RegistryValueType(IntEnum):
     SZ = winreg.REG_SZ
 
 
-class RegistryValue(NamedTuple):
+class RegistryValue:
 
-    value: Any
-    type_: RegistryValueType
+    winreg_type: RegistryValueType = None
