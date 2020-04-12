@@ -153,5 +153,8 @@ class RegistryKey:
         self.ensure_handle_exists(False)
         winreg.DeleteValue(self.handle, key)
 
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, RegistryKey) and other.hkey == self.hkey and other.path == self.path
+
     def __repr__(self) -> str:
         return f"{type(self).__name__}('{str(self.full_path)}')"
