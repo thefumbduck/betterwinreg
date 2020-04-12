@@ -43,6 +43,16 @@ class TestKeyManipulation:
         key.delete()
         assert not key.is_key()
 
+    def test_key_len(self):
+        key = RegistryKey(self.SET_TEST_KEY_PATH)
+
+        for i in range(10):
+            key[f'test{i}'] = RegistryValue(i, RegistryValueType.DWORD)
+
+        assert len(key) == 10
+
+        key.delete()
+
 
 class TestKeyNavigation:
 
