@@ -58,6 +58,21 @@ class RegistryKey:
         except OSError:
             return subkeys
 
+    @property
+    def values(self) -> List[RegistryKey]:
+        from itertools import count
+
+        self.ensure_handle_exists(True)
+        values = []
+        try:
+            for i in count():
+                data = winreg.EnumValue(self.handle, i)
+                type_ = RegistryValueType(
+                    data[self.EnumValueReturnMembers.TYPE])
+                values.append(data[self.EnumValueReturnMembers.NAME], RegistryValue(data[self.EnumValueReturnMembers.VALUE], type_))
+        finally:
+            return values
+
     def __init__(self, path: Union[str, RegistryPath] = None) -> None:
         if not path:
             return
@@ -114,20 +129,6 @@ class RegistryKey:
     def __len__(self) -> int:
         self.ensure_handle_exists(True)
         return winreg.QueryInfoKey(self.handle)[self.QueryInfoReturnMembers.VALUES_AMOUNT]
-
-    def __iter__(self) -> Iterator[RegistryValue]:
-        from itertools import count
-
-        self.ensure_handle_exists(True)
-
-        try:
-            for i in count():
-                data = winreg.EnumValue(self.handle, i)
-                type_ = RegistryValueType(
-                    data[self.EnumValueReturnMembers.TYPE])
-                yield (data[self.EnumValueReturnMembers.NAME], RegistryValue(data[self.EnumValueReturnMembers.VALUE], type_))
-        except OSError:
-            return
 
     def __contains__(self, item: str) -> bool:
         try:
