@@ -65,6 +65,12 @@ class TestKeyManipulation:
 
         key.delete()
 
+    def test_key_contains(self):
+        key = RegistryKey(self.SET_TEST_KEY_PATH)
+        key['test1'] = RegistryValue(42, RegistryValueType.DWORD)
+        assert 'test1' in key
+        key.delete()
+
 
 class TestKeyNavigation:
 
