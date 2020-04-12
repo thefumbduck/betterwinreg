@@ -1,6 +1,6 @@
 import winreg
 from enum import IntEnum
-from typing import Union, List
+from typing import Union, List, Type
 
 
 # Manually write these to have autocomplete
@@ -78,7 +78,7 @@ class ResourceRequirementsList(RegistryValue, bytearray):
     winreg_type: RegistryValueType = RegistryValueType.RESOURCE_REQUIREMENTS_LIST
 
 
-def get_registry_value_types() -> List[type]:
+def get_registry_value_types() -> List[Type[RegistryValue]]:
     import sys, inspect
 
     this_module = sys.modules[__name__]
@@ -91,4 +91,4 @@ def get_registry_value_types() -> List[type]:
     return result
 
 
-registry_value_types: List[type] = get_registry_value_types()
+registry_value_types: List[Type[RegistryValue]] = get_registry_value_types()
