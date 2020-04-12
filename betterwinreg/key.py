@@ -6,7 +6,7 @@ from pathlib import PureWindowsPath
 from typing import Any, Iterator, List, Union
 
 from betterwinreg.hkey import Hkey
-from betterwinreg.value import RegistryValue, RegistryValueType
+from betterwinreg.value import RegistryValue, RegistryValueType, get_registry_instance
 
 
 class RegistryPath(PureWindowsPath):
@@ -140,8 +140,9 @@ class RegistryKey:
     def __getitem__(self, key: str) -> RegistryValue:
         self.ensure_handle_exists(True)
         data = winreg.QueryValueEx(self.handle, key)
+        value = data[self.QueryValueReturnMembers.VALUE]
         type_ = RegistryValueType(data[self.QueryValueReturnMembers.TYPE])
-        return RegistryValue(data[self.QueryValueReturnMembers.VALUE], type_)
+        return get_registry_instance(value, type_)
 
     def __setitem__(self, key: str, value: RegistryValue) -> None:
         if not self.is_key():
