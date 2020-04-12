@@ -10,6 +10,8 @@ setup(
     version=VERSION,
     packages=find_packages(exclude=('tests/',)),
 
+    python_requires='>=3.7',
+
     description='A wrapper that makes working with winreg easier',
     long_description=README,
     long_description_content_type='text/markdown',
