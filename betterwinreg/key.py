@@ -44,7 +44,7 @@ class RegistryKey:
         return RegistryKey.from_hkey_and_path(self.hkey, self.path.parent)
 
     @property
-    def subkeys(self) -> Iterator[RegistryKey]:
+    def subkeys(self) -> List[RegistryKey]:
         from itertools import count
 
         self.ensure_handle_exists(True)
