@@ -75,6 +75,18 @@ class RegistryKey:
         except OSError:
             return values
 
+    @property
+    def default_value(self) -> RegistryValue:
+        return self['']
+
+    @default_value.setter
+    def default_value(self, value: RegistryValue) -> None:
+        self[''] = value
+
+    @default_value.deleter
+    def default_value(self) -> None:
+        del self['']
+
     def __init__(self, path: Union[str, RegistryPath] = None) -> None:
         if not path:
             return
