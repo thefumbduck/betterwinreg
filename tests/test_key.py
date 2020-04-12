@@ -77,3 +77,9 @@ class TestKeyNavigation:
         assert len(list(key.subkeys)) == 2
 
         key.delete()
+
+
+class TestKeyMisc:
+
+    def test_repr(self):
+        assert repr(RegistryKey(r'HKEY_CURRENT_USER\harmless_test')) == r"RegistryKey('HKEY_CURRENT_USER\harmless_test')"
