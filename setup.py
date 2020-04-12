@@ -8,7 +8,7 @@ VERSION = '1.0.0'
 setup(
     name='better-winreg',
     version=VERSION,
-    packages=find_packages(),
+    packages=find_packages(exclude=('tests/',)),
 
     description='A wrapper that makes working with winreg easier',
     long_description=README,
