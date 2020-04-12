@@ -21,5 +21,8 @@ class RegistryValueType(IntEnum):
 
 
 class RegistryValue:
-
     winreg_type: RegistryValueType = None
+
+
+class Binary(RegistryValue, bytes):
+    winreg_type: RegistryValueType = RegistryValueType.BINARY
