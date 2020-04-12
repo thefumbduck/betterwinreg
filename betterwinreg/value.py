@@ -9,7 +9,6 @@ class RegistryValueType(IntEnum):
     DWORD = winreg.REG_DWORD
     DWORD_BIG_ENDIAN = winreg.REG_DWORD_BIG_ENDIAN
     QWORD = winreg.REG_QWORD
-    QWORD_LITTLE_ENDIAN = winreg.REG_QWORD_LITTLE_ENDIAN
     SZ = winreg.REG_SZ
     EXPAND_SZ = winreg.REG_EXPAND_SZ
     MULTI_SZ = winreg.REG_MULTI_SZ
@@ -49,10 +48,6 @@ class DwordBigEndian(RegistryValue, bytearray):
 
 class Qword(RegistryValue, int):
     winreg_type: RegistryValueType = RegistryValueType.QWORD
-
-
-class QwordLittleEndian(RegistryValue, int):
-    winreg_type: RegistryValueType = RegistryValueType.QWORD_LITTLE_ENDIAN
 
 
 class Sz(RegistryValue, str):
