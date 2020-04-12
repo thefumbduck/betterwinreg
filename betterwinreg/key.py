@@ -75,6 +75,18 @@ class RegistryKey:
         except OSError:
             return values
 
+    @property
+    def default_value(self) -> RegistryValue:
+        return self['']
+
+    @default_value.setter
+    def default_value(self, value: RegistryValue) -> None:
+        self[''] = value
+
+    @default_value.deleter
+    def default_value(self) -> None:
+        del self['']
+
     def __init__(self, path: Union[str, RegistryPath] = None) -> None:
         if not path:
             return
@@ -115,6 +127,13 @@ class RegistryKey:
     def flush(self) -> None:
         self.ensure_handle_exists(False)
         winreg.FlushKey(self.handle)
+
+    def has_default_value(self) -> bool:
+        try:
+            _ = self.default_value
+        except FileNotFoundError:
+            return False
+        return True
 
     def make_handle(self, readonly: bool = True) -> winreg.HKEYType:
         access = winreg.KEY_READ if readonly else winreg.KEY_ALL_ACCESS
