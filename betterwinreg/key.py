@@ -3,7 +3,7 @@ from __future__ import annotations
 import winreg
 from enum import IntEnum
 from pathlib import PureWindowsPath
-from typing import Any, Iterator, List, Union
+from typing import Any, Iterator, List, Dict, Union
 
 from betterwinreg.hkey import Hkey
 from betterwinreg.value import RegistryValue, RegistryValueType, get_registry_instance
@@ -59,17 +59,19 @@ class RegistryKey:
             return subkeys
 
     @property
-    def values(self) -> List[RegistryKey]:
+    def values(self) -> Dict[RegistryKey]:
         from itertools import count
 
         self.ensure_handle_exists(True)
-        values = []
+        values = {}
         try:
             for i in count():
                 data = winreg.EnumValue(self.handle, i)
+                name = data[self.EnumValueReturnMembers.NAME]
+                value = data[self.EnumValueReturnMembers.VALUE]
                 type_ = RegistryValueType(
                     data[self.EnumValueReturnMembers.TYPE])
-                values.append((data[self.EnumValueReturnMembers.NAME], RegistryValue(data[self.EnumValueReturnMembers.VALUE], type_)))
+                values.update({name: get_registry_instance(value, type_)})
         except OSError:
             return values
 
