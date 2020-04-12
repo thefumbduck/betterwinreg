@@ -148,7 +148,7 @@ class RegistryKey:
             self.create()
         self.ensure_handle_exists(False)
         winreg.SetValueEx(self.handle, key,
-                          0, value.type_, value.value)
+                          0, value.winreg_type, value)
 
     def __delitem__(self, key: str) -> None:
         self.ensure_handle_exists(False)
