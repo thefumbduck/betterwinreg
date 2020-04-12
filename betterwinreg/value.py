@@ -43,7 +43,7 @@ class Dword(RegistryValue, int):
     winreg_type: RegistryValueType = RegistryValueType.DWORD
 
 
-class DwordBigEndian(RegistryValue, int):
+class DwordBigEndian(RegistryValue, bytearray):
     winreg_type: RegistryValueType = RegistryValueType.DWORD_BIG_ENDIAN
 
 

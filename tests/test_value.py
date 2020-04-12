@@ -1,4 +1,4 @@
-from betterwinreg.value import get_registry_instance, RegistryValueType, Dword, Qword, Sz, ExpandSz, MultiSz
+from betterwinreg.value import get_registry_instance, RegistryValueType, Dword, DwordBigEndian, Qword, Sz, ExpandSz, MultiSz
 
 
 class TestConversion:
@@ -14,3 +14,6 @@ class TestConversion:
 
     def test_none(self):
         assert get_registry_instance(None, RegistryValueType.NONE) is None
+
+    def test_weird(self):
+        assert isinstance(get_registry_instance(b'abc', RegistryValueType.DWORD_BIG_ENDIAN), DwordBigEndian)
