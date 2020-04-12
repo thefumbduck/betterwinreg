@@ -58,7 +58,7 @@ class ExpandSz(RegistryValue, str):
     winreg_type: RegistryValueType = RegistryValueType.EXPAND_SZ
 
 
-class MultiSz(RegistryValue, str):
+class MultiSz(RegistryValue, List[str]):
     winreg_type: RegistryValueType = RegistryValueType.MULTI_SZ
 
 

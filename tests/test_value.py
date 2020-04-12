@@ -10,7 +10,7 @@ class TestConversion:
     def test_str(self):
         assert isinstance(get_registry_instance('hi', RegistryValueType.SZ), Sz)
         assert isinstance(get_registry_instance('hi', RegistryValueType.EXPAND_SZ), ExpandSz)
-        assert isinstance(get_registry_instance('hi', RegistryValueType.MULTI_SZ), MultiSz)
+        assert isinstance(get_registry_instance(['hello', 'world'], RegistryValueType.MULTI_SZ), MultiSz)
 
     def test_none(self):
         assert get_registry_instance(None, RegistryValueType.NONE) is None
