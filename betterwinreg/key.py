@@ -146,12 +146,13 @@ class RegistryKey:
         type_ = RegistryValueType(data[self.QueryValueReturnMembers.TYPE])
         return get_registry_instance(value, type_)
 
-    def __setitem__(self, key: str, value: RegistryValue) -> None:
+    def __setitem__(self, key: str, value: Union[RegistryValue, None]) -> None:
         if not self.is_key():
             self.create()
         self.ensure_handle_exists(False)
+        type_ = value.winreg_type if not value is None else RegistryValueType.NONE
         winreg.SetValueEx(self.handle, key,
-                          0, value.winreg_type, value)
+                          0, type_, value)
 
     def __delitem__(self, key: str) -> None:
         self.ensure_handle_exists(False)
