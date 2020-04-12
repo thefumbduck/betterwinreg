@@ -87,6 +87,12 @@ class TestKeyManipulation:
         assert 'test1' in key
         key.delete()
 
+    def test_set_get_none(self):
+        key = RegistryKey(self.SET_TEST_KEY_PATH)
+        key['TestNone'] = None
+        assert key['TestNone'] is None
+        key.delete()
+
 
 class TestKeyNavigation:
 
