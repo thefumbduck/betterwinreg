@@ -9,3 +9,6 @@ class TestConversion:
 
     def test_str(self):
         assert isinstance(get_registry_instance('hi', RegistryValueType.SZ), Sz)
+
+    def test_none(self):
+        assert get_registry_instance(None, RegistryValueType.NONE) is None
