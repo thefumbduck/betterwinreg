@@ -21,4 +21,4 @@ class Hkey:
         return name.startswith('HKEY_') and hasattr(winreg, name)
 
     def __eq__(self, other: Any) -> bool:
-        return other is Hkey and self.id_ == other.id_
+        return isinstance(other, Hkey) and self.id_ == other.id_
