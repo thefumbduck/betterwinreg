@@ -25,6 +25,14 @@ class TestKeyManipulation:
     def test_get(self):
         assert RegistryKey(r'Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer')['UserSignedIn'].value == 1
 
+    def test_create(self):
+        key = RegistryKey(self.SET_TEST_KEY_PATH)
+        if key.is_key():
+            key.delete()
+        key.create()
+        assert key.is_key()
+        key.delete()
+
     def test_set_value(self):
         key = RegistryKey(self.SET_TEST_KEY_PATH)
         key['test'] = RegistryValue(42, RegistryValueType.DWORD)
