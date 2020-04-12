@@ -18,6 +18,10 @@ class TestKeyManipulation:
 
     SET_TEST_KEY_PATH = r'HKEY_CURRENT_USER\harmless_test'
 
+    def test_existence(self):
+        assert RegistryKey(r'Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer').is_key()
+        assert not RegistryKey(r'HKEY_CURRENT_USER\ThisKeyDoesntExist').is_key()
+
     def test_get(self):
         assert RegistryKey(r'Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer')['UserSignedIn'].value == 1
 
