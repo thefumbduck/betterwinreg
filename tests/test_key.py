@@ -42,3 +42,28 @@ class TestKeyManipulation:
         key.flush()
         key.delete()
         assert not key.is_key()
+
+
+class TestKeyNavigation:
+
+    def test_eq(self):
+        assert RegistryKey(r'HKEY_CURRENT_USER\harmless_test') == RegistryKey(r'HKEY_CURRENT_USER/harmless_test')
+
+    def test_ne(self):
+        assert RegistryKey(r'HKEY_CURRENT_USER\harmless_test') != RegistryKey(r'HKEY_CURRENT_USER\harmful_test')
+
+    def test_parent(self):
+        assert RegistryKey(r'HKEY_CURRENT_USER\harmless_test\subkey').parent == RegistryKey(r'HKEY_CURRENT_USER\harmless_test')
+        assert RegistryKey(r'HKEY_CURRENT_USER\harmless_test').parent == RegistryKey(r'HKEY_CURRENT_USER')
+
+    def test_subkeys(self):
+        key = RegistryKey(r'HKEY_CURRENT_USER\harmless_key')
+        if not key.is_key():
+            key.create()
+
+        (key / 'test1').create()
+        (key / 'test2').create()
+
+        assert len(list(key.subkeys)) == 2
+
+        key.delete()
