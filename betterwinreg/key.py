@@ -3,10 +3,10 @@ from __future__ import annotations
 import winreg
 from enum import IntEnum
 from pathlib import PureWindowsPath
-from typing import Any, Iterator, List, Union
+from typing import Any, Iterator, List, Dict, Union
 
 from betterwinreg.hkey import Hkey
-from betterwinreg.value import RegistryValue, RegistryValueType
+from betterwinreg.value import RegistryValue, RegistryValueType, get_registry_instance
 
 
 class RegistryPath(PureWindowsPath):
@@ -59,17 +59,19 @@ class RegistryKey:
             return subkeys
 
     @property
-    def values(self) -> List[RegistryKey]:
+    def values(self) -> Dict[RegistryKey]:
         from itertools import count
 
         self.ensure_handle_exists(True)
-        values = []
+        values = {}
         try:
             for i in count():
                 data = winreg.EnumValue(self.handle, i)
+                name = data[self.EnumValueReturnMembers.NAME]
+                value = data[self.EnumValueReturnMembers.VALUE]
                 type_ = RegistryValueType(
                     data[self.EnumValueReturnMembers.TYPE])
-                values.append((data[self.EnumValueReturnMembers.NAME], RegistryValue(data[self.EnumValueReturnMembers.VALUE], type_)))
+                values.update({name: get_registry_instance(value, type_)})
         except OSError:
             return values
 
@@ -140,15 +142,17 @@ class RegistryKey:
     def __getitem__(self, key: str) -> RegistryValue:
         self.ensure_handle_exists(True)
         data = winreg.QueryValueEx(self.handle, key)
+        value = data[self.QueryValueReturnMembers.VALUE]
         type_ = RegistryValueType(data[self.QueryValueReturnMembers.TYPE])
-        return RegistryValue(data[self.QueryValueReturnMembers.VALUE], type_)
+        return get_registry_instance(value, type_)
 
-    def __setitem__(self, key: str, value: RegistryValue) -> None:
+    def __setitem__(self, key: str, value: Union[RegistryValue, None]) -> None:
         if not self.is_key():
             self.create()
         self.ensure_handle_exists(False)
+        type_ = value.winreg_type if not value is None else RegistryValueType.NONE
         winreg.SetValueEx(self.handle, key,
-                          0, value.type_, value.value)
+                          0, type_, value)
 
     def __delitem__(self, key: str) -> None:
         self.ensure_handle_exists(False)
