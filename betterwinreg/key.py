@@ -143,6 +143,8 @@ class RegistryKey:
         return RegistryValue(data[self.QueryValueReturnMembers.VALUE], type_)
 
     def __setitem__(self, key: str, value: RegistryValue) -> None:
+        if not self.is_key():
+            self.create()
         self.ensure_handle_exists(False)
         winreg.SetValueEx(self.handle, key,
                           0, value.type_, value.value)
