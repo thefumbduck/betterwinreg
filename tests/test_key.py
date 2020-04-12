@@ -55,6 +55,22 @@ class TestKeyManipulation:
         key.delete()
         assert not key.is_key()
 
+    def test_values_iter(self):
+        import re
+
+        key = RegistryKey(self.SET_TEST_KEY_PATH)
+
+        for i in range(10):
+            key[f'test{i}'] = RegistryValue(i, RegistryValueType.DWORD)
+        key.flush()
+
+        values = key.values
+        assert len(values) > 0
+        for name, value in values:
+            assert re.match(r'test([0-9])+', name) and isinstance(value.value, int)
+
+        key.delete()
+
     def test_key_len(self):
         key = RegistryKey(self.SET_TEST_KEY_PATH)
 
