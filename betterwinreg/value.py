@@ -25,9 +25,13 @@ class RegistryValue:
 
 
 def get_instance(value: Union[int, str, bytearray], winreg_type: RegistryValueType) -> RegistryValue:
+    if value is None:
+        return None
+
     for type_ in registry_value_types:
         if type_.winreg_type == winreg_type:
             return type_(value)
+
     raise TypeError(f'{value} cannot be converted to {winreg_type.name}')
 
 
