@@ -27,8 +27,12 @@ class TestKeyManipulation:
         assert RegistryKey(r'Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer')['UserSignedIn'] == 1
 
     def test_get_fail(self):
+        key = RegistryKey(self.SET_TEST_KEY_PATH)
+        if not key.is_key():
+            key.create()
         with pytest.raises(KeyError):
-            RegistryKey(self.SET_TEST_KEY_PATH)['InvalidKey']
+            key['InvalidKey']
+        key.delete()
 
     def test_create(self):
         key = RegistryKey(self.SET_TEST_KEY_PATH)
