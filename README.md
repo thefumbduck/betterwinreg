@@ -1,6 +1,6 @@
 # better-winreg
 
-A wrapper that makes working with winreg easier.
+A sane way of working with the Windows registry.
 
 ## Getting a RegistryKey instance
 

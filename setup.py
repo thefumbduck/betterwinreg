@@ -12,7 +12,7 @@ setup(
 
     python_requires='>=3.7',
 
-    description='A wrapper that makes working with winreg easier',
+    description='A sane way of working with the Windows registry',
     long_description=README,
     long_description_content_type='text/markdown',
     keywords='winreg windows registry oop',
