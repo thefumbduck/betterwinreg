@@ -1,6 +1,8 @@
 from betterwinreg.key import RegistryKey, RegistryPath
 from betterwinreg.value import RegistryValue, RegistryValueType, Dword
 
+TEST_KEY_ROOT = RegistryKey(r'HKEY_CURRENT_USER\betterwinreg\tests')
+
 
 class TestKeyParsing:
 
@@ -16,31 +18,52 @@ class TestKeyParsing:
 
 class TestKeyManipulation:
 
-    SET_TEST_KEY_PATH = r'HKEY_CURRENT_USER\harmless_test'
-
     def test_existence(self):
         assert RegistryKey(r'Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer').is_key()
         assert not RegistryKey(r'HKEY_CURRENT_USER\ThisKeyDoesntExist').is_key()
 
-    def test_get(self):
-        assert RegistryKey(r'Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer')['UserSignedIn'] == 1
-
     def test_create(self):
-        key = RegistryKey(self.SET_TEST_KEY_PATH)
+        key = RegistryKey(TEST_KEY_ROOT)
         if key.is_key():
             key.delete()
         key.create()
         assert key.is_key()
         key.delete()
 
+    def test_del_key(self):
+        key = RegistryKey(TEST_KEY_ROOT)
+        if not key.is_key():
+            key.create()
+        key.flush()
+        key.delete()
+        assert not key.is_key()
+
+        key.delete()
+
+    def test_key_len(self):
+        key = RegistryKey(TEST_KEY_ROOT)
+
+        for i in range(10):
+            key[f'test{i}'] = Dword(i)
+
+        assert len(key) == 10
+
+        key.delete()
+
+
+class TestValues:
+
+    def test_get(self):
+        assert RegistryKey(r'Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer')['UserSignedIn'] == 1
+
     def test_set_value(self):
-        key = RegistryKey(self.SET_TEST_KEY_PATH)
+        key = RegistryKey(TEST_KEY_ROOT)
         key['test'] = Dword(42)
         key.flush()
         assert key['test'] == 42
 
     def test_del_value(self):
-        key = RegistryKey(self.SET_TEST_KEY_PATH)
+        key = RegistryKey(TEST_KEY_ROOT)
         key['test'] = Dword(42)
         key.flush()
         del key['test']
@@ -48,7 +71,7 @@ class TestKeyManipulation:
         assert 'test' not in key.values()
 
     def test_default_value(self):
-        key = RegistryKey(self.SET_TEST_KEY_PATH)
+        key = RegistryKey(TEST_KEY_ROOT)
 
         key.default_value = Dword(42)
         assert key.has_default_value()
@@ -60,18 +83,10 @@ class TestKeyManipulation:
 
         key.delete()
 
-    def test_del_key(self):
-        key = RegistryKey(self.SET_TEST_KEY_PATH)
-        if not key.is_key():
-            key.create()
-        key.flush()
-        key.delete()
-        assert not key.is_key()
-
     def test_values_iter(self):
         import re
 
-        key = RegistryKey(self.SET_TEST_KEY_PATH)
+        key = RegistryKey(TEST_KEY_ROOT)
 
         for i in range(10):
             key[f'test{i}'] = Dword(i)
@@ -82,20 +97,8 @@ class TestKeyManipulation:
         for name, value in values.items():
             assert re.match(r'test([0-9])+', name) and isinstance(value, int)
 
-        key.delete()
-
-    def test_key_len(self):
-        key = RegistryKey(self.SET_TEST_KEY_PATH)
-
-        for i in range(10):
-            key[f'test{i}'] = Dword(i)
-
-        assert len(key) == 10
-
-        key.delete()
-
     def test_set_get_none(self):
-        key = RegistryKey(self.SET_TEST_KEY_PATH)
+        key = RegistryKey(TEST_KEY_ROOT)
         key['TestNone'] = None
         assert key['TestNone'] is None
         key.delete()
@@ -114,7 +117,7 @@ class TestKeyNavigation:
         assert RegistryKey(r'HKEY_CURRENT_USER\harmless_test').parent == RegistryKey(r'HKEY_CURRENT_USER')
 
     def test_subkeys(self):
-        key = RegistryKey(r'HKEY_CURRENT_USER\harmless_key')
+        key = TEST_KEY_ROOT
         if not key.is_key():
             key.create()
 
