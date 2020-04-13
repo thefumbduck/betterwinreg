@@ -146,8 +146,8 @@ class RegistryKey:
         return winreg.QueryInfoKey(self.handle)[self.QueryInfoReturnMembers.VALUES_AMOUNT]
 
     def __getitem__(self, key: str) -> RegistryValue:
+        self.ensure_handle_exists(True)
         try:
-            self.ensure_handle_exists(True)
             data = winreg.QueryValueEx(self.handle, key)
             value = data[self.QueryValueReturnMembers.VALUE]
             type_ = RegistryValueType(data[self.QueryValueReturnMembers.TYPE])
