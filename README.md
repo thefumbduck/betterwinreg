@@ -44,6 +44,13 @@ For example, you would get the wallpaper path by doing:
 wallpaper_path = RegistryKey(r'HKEY_CURRENT_USER\Control Panel\Desktop')['WallPaper']
 ```
 
+Note that getting a value returns a special object that represents the registry type. You can use it normally, but doing stuff with it will make it a regular instance of the base type.
+
+```python
+>>> RegistryKey(r'HKEY_CURRENT_USER\Control Panel\Desktop')['WallPaper']
+Sz('D:\\Pictures\\wallpaper.png')
+```
+
 ## Setting and deleting values
 
 Since registry types are different than Python types, you need to specify what type the registry value will be set to.
@@ -65,7 +72,7 @@ The main ways to move through the registry are using `subkeys()` and `parent`, a
 
 ```python
 >>> RegistryKey(r'HKEY_CURRENT_USER\Control Panel\Desktop').parent
-RegistryKey('HKEY_CURRENT_USER\Control Panel')
+RegistryKey('HKEY_CURRENT_USER\\Control Panel')
 
 >>> RegistryKey(r'HKEY_CURRENT_USER\Control Panel\Desktop').subkeys()
 [RegistryKey(r'HKEY_CURRENT_USER\Control Panel\Desktop\Colors'), RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics'), RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop\MuiCached')]
@@ -75,5 +82,5 @@ You can also join `RegistryKey`s in a `Path`-like manner:
 
 ```python
 >>> RegistryKey(r'HKEY_CURRENT_USER\Control Panel') / 'Desktop'
-RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop')
+RegistryKey('HKEY_CURRENT_USER\\Control Panel\\Desktop')
 ```
