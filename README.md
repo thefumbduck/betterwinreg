@@ -84,3 +84,7 @@ You can also join `RegistryKey`s in a `Path`-like manner:
 >>> RegistryKey(r'HKEY_CURRENT_USER\Control Panel') / 'Desktop'
 RegistryKey('HKEY_CURRENT_USER\\Control Panel\\Desktop')
 ```
+
+## Notes
+
+Only tested on Windows 10 64-bit. **It won't work on 32-bit**, because of some incompatible API calls (e.g. `RegDeleteKeyEx`).
