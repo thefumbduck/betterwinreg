@@ -6,7 +6,7 @@ README = (HERE / 'README.md').open().read()
 VERSION = '1.0.0'
 
 setup(
-    name='better-winreg',
+    name='betterwinreg',
     version=VERSION,
     packages=find_packages(exclude=('tests/',)),
 

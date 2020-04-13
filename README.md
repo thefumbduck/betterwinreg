@@ -1,4 +1,4 @@
-# better-winreg
+# betterwinreg
 
 A sane way of working with the Windows registry.
 
