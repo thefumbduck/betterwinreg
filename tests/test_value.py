@@ -17,3 +17,12 @@ class TestConversion:
 
     def test_weird(self):
         assert isinstance(get_registry_instance(b'abc', RegistryValueType.DWORD_BIG_ENDIAN), DwordBigEndian)
+
+
+class TestMisc:
+
+    def test_repr(self):
+        assert repr(Dword(42)) == 'Dword(42)'
+
+    def test_str(self):
+        assert str(Dword(42)) == '42'
