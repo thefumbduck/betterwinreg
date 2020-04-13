@@ -21,10 +21,16 @@ class Hkey:
     id_: int
 
     def __init__(self, name: str) -> Hkey:
-        self.name = name
+        self.name = self.get_full_name(name)
         self.id_ = self.find_id(name)
         if not self.id_:
             raise OSError('The specified hkey is not valid')
+
+    @staticmethod
+    def get_full_name(name: str) -> str:
+        for names in HKEY_IDS.keys():
+            if name in names:
+                return names[0]
 
     @staticmethod
     def find_id(name: str) -> int:
