@@ -174,4 +174,4 @@ class RegistryKey:
         return f"{type(self).__name__}('{str(self.full_path)}')"
 
     def __str__(self) -> str:
-        return self.full_path
+        return str(self.full_path)
