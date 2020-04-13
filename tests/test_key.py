@@ -45,7 +45,7 @@ class TestKeyManipulation:
         key.flush()
         del key['test']
         key.flush()
-        assert 'test' not in key
+        assert 'test' not in key.values()
 
     def test_default_value(self):
         key = RegistryKey(self.SET_TEST_KEY_PATH)
@@ -92,12 +92,6 @@ class TestKeyManipulation:
 
         assert len(key) == 10
 
-        key.delete()
-
-    def test_key_contains(self):
-        key = RegistryKey(self.SET_TEST_KEY_PATH)
-        key['test1'] = Dword(42)
-        assert 'test1' in key
         key.delete()
 
     def test_set_get_none(self):
