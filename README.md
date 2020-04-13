@@ -28,14 +28,14 @@ key = RegistryKey(r'HKEY_MY_KEY\Path\To\Key\You\Want')
 You can get a specific value by using a dict-like syntax:
 
 ```python
-my_wacky_value = key['WackyValue']
+my_value = key['Value']
 ```
 
 You can also iterate though all the values a key has:
 
 ```python
 for name, value in key.values().items():
-    # do some more wacky stuff
+    # do some stuff
 ```
 
 For example, you would get the wallpaper path by doing:
