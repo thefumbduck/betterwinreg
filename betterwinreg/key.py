@@ -97,11 +97,7 @@ class RegistryKey:
         winreg.FlushKey(self.handle)
 
     def has_default_value(self) -> bool:
-        try:
-            _ = self.default_value
-        except FileNotFoundError:
-            return False
-        return True
+        return '' in self.values()
 
     def subkeys(self) -> List[RegistryKey]:
         from itertools import count
@@ -148,13 +144,6 @@ class RegistryKey:
     def __len__(self) -> int:
         self.ensure_handle_exists(True)
         return winreg.QueryInfoKey(self.handle)[self.QueryInfoReturnMembers.VALUES_AMOUNT]
-
-    def __contains__(self, item: str) -> bool:
-        try:
-            _ = self[item]
-        except FileNotFoundError:
-            return False
-        return True
 
     def __getitem__(self, key: str) -> RegistryValue:
         try:
