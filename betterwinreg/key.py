@@ -43,36 +43,6 @@ class RegistryKey:
     def parent(self) -> RegistryKey:
         return RegistryKey.from_hkey_and_path(self.hkey, self.path.parent)
 
-    def subkeys(self) -> List[RegistryKey]:
-        from itertools import count
-
-        self.ensure_handle_exists(True)
-        subkeys = []
-        try:
-            for i in count():
-                key_name = winreg.EnumKey(self.handle, i)
-                key = RegistryKey.from_hkey_and_path(
-                    self.hkey, self.path / key_name)
-                subkeys.append(key)
-        except OSError:
-            return subkeys
-
-    def values(self) -> Dict[RegistryKey]:
-        from itertools import count
-
-        self.ensure_handle_exists(True)
-        values = {}
-        try:
-            for i in count():
-                data = winreg.EnumValue(self.handle, i)
-                name = data[self.EnumValueReturnMembers.NAME]
-                value = data[self.EnumValueReturnMembers.VALUE]
-                type_ = RegistryValueType(
-                    data[self.EnumValueReturnMembers.TYPE])
-                values.update({name: get_registry_instance(value, type_)})
-        except OSError:
-            return values
-
     @property
     def default_value(self) -> RegistryValue:
         return self['']
@@ -132,6 +102,36 @@ class RegistryKey:
         except FileNotFoundError:
             return False
         return True
+
+    def subkeys(self) -> List[RegistryKey]:
+        from itertools import count
+
+        self.ensure_handle_exists(True)
+        subkeys = []
+        try:
+            for i in count():
+                key_name = winreg.EnumKey(self.handle, i)
+                key = RegistryKey.from_hkey_and_path(
+                    self.hkey, self.path / key_name)
+                subkeys.append(key)
+        except OSError:
+            return subkeys
+
+    def values(self) -> Dict[RegistryKey]:
+        from itertools import count
+
+        self.ensure_handle_exists(True)
+        values = {}
+        try:
+            for i in count():
+                data = winreg.EnumValue(self.handle, i)
+                name = data[self.EnumValueReturnMembers.NAME]
+                value = data[self.EnumValueReturnMembers.VALUE]
+                type_ = RegistryValueType(
+                    data[self.EnumValueReturnMembers.TYPE])
+                values.update({name: get_registry_instance(value, type_)})
+        except OSError:
+            return values
 
     def make_handle(self, readonly: bool = True) -> winreg.HKEYType:
         access = winreg.KEY_READ if readonly else winreg.KEY_ALL_ACCESS
