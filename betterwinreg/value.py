@@ -20,7 +20,11 @@ class RegistryValueType(IntEnum):
 
 
 class RegistryValue:
+
     winreg_type: RegistryValueType = None
+
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}('{str(self)}')"
 
 
 def get_registry_instance(value: Union[int, str, bytearray], winreg_type: RegistryValueType) -> RegistryValue:
