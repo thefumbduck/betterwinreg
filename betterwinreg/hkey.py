@@ -35,3 +35,9 @@ class Hkey:
 
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, Hkey) and self.id_ == other.id_
+
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}('{str(self)}')"
+
+    def __str__(self) -> str:
+        return self.name
