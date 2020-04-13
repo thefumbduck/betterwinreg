@@ -32,8 +32,8 @@ class RegistryKey:
     hkey: Hkey
     path: RegistryPath
 
-    handle: winreg.HKEYType = None
-    is_handle_readonly: bool = True
+    _handle: winreg.HKEYType = None
+    _is_handle_readonly: bool = True
 
     @property
     def full_path(self) -> RegistryPath:
@@ -78,7 +78,7 @@ class RegistryKey:
 
     def is_key(self) -> bool:
         try:
-            _ = self.make_handle(True)
+            _ = self._make_handle(True)
         except FileNotFoundError:
             return False
         return True
@@ -93,8 +93,8 @@ class RegistryKey:
         winreg.DeleteKeyEx(self.hkey.id_, str(self.path))
 
     def flush(self) -> None:
-        self.ensure_handle_exists(False)
-        winreg.FlushKey(self.handle)
+        self._ensure_handle_exists(False)
+        winreg.FlushKey(self._handle)
 
     def has_default_value(self) -> bool:
         return '' in self.values()
@@ -102,11 +102,11 @@ class RegistryKey:
     def subkeys(self) -> List[RegistryKey]:
         from itertools import count
 
-        self.ensure_handle_exists(True)
+        self._ensure_handle_exists(True)
         subkeys = []
         try:
             for i in count():
-                key_name = winreg.EnumKey(self.handle, i)
+                key_name = winreg.EnumKey(self._handle, i)
                 key = RegistryKey.from_hkey_and_path(
                     self.hkey, self.path / key_name)
                 subkeys.append(key)
@@ -116,11 +116,11 @@ class RegistryKey:
     def values(self) -> Dict[RegistryKey]:
         from itertools import count
 
-        self.ensure_handle_exists(True)
+        self._ensure_handle_exists(True)
         values = {}
         try:
             for i in count():
-                data = winreg.EnumValue(self.handle, i)
+                data = winreg.EnumValue(self._handle, i)
                 name = data[self.EnumValueReturnMembers.NAME]
                 value = data[self.EnumValueReturnMembers.VALUE]
                 type_ = RegistryValueType(
@@ -129,26 +129,26 @@ class RegistryKey:
         except OSError:
             return values
 
-    def make_handle(self, readonly: bool = True) -> winreg.HKEYType:
+    def _make_handle(self, readonly: bool = True) -> winreg.HKEYType:
         access = winreg.KEY_READ if readonly else winreg.KEY_ALL_ACCESS
         return winreg.OpenKeyEx(self.hkey.id_, str(self.path), 0, access)
 
-    def ensure_handle_exists(self, readonly: bool = True) -> None:
-        if not self.handle or (not readonly and self.is_handle_readonly):
-            self.handle = self.make_handle(readonly)
-        self.is_handle_readonly = readonly
+    def _ensure_handle_exists(self, readonly: bool = True) -> None:
+        if not self._handle or (not readonly and self._is_handle_readonly):
+            self._handle = self._make_handle(readonly)
+        self._is_handle_readonly = readonly
 
     def __truediv__(self, other: Union[str, RegistryPath]) -> RegistryKey:
         return RegistryKey.from_hkey_and_path(self.hkey, self.path / other)
 
     def __len__(self) -> int:
-        self.ensure_handle_exists(True)
-        return winreg.QueryInfoKey(self.handle)[self.QueryInfoReturnMembers.VALUES_AMOUNT]
+        self._ensure_handle_exists(True)
+        return winreg.QueryInfoKey(self._handle)[self.QueryInfoReturnMembers.VALUES_AMOUNT]
 
     def __getitem__(self, key: str) -> RegistryValue:
-        self.ensure_handle_exists(True)
+        self._ensure_handle_exists(True)
         try:
-            data = winreg.QueryValueEx(self.handle, key)
+            data = winreg.QueryValueEx(self._handle, key)
             value = data[self.QueryValueReturnMembers.VALUE]
             type_ = RegistryValueType(data[self.QueryValueReturnMembers.TYPE])
             return get_registry_instance(value, type_)
@@ -158,14 +158,14 @@ class RegistryKey:
     def __setitem__(self, key: str, value: Union[RegistryValue, None]) -> None:
         if not self.is_key():
             self.create()
-        self.ensure_handle_exists(False)
+        self._ensure_handle_exists(False)
         type_ = value.winreg_type if not value is None else RegistryValueType.NONE
-        winreg.SetValueEx(self.handle, key,
+        winreg.SetValueEx(self._handle, key,
                           0, type_, value)
 
     def __delitem__(self, key: str) -> None:
-        self.ensure_handle_exists(False)
-        winreg.DeleteValue(self.handle, key)
+        self._ensure_handle_exists(False)
+        winreg.DeleteValue(self._handle, key)
 
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, RegistryKey) and other.hkey == self.hkey and other.path == self.path
