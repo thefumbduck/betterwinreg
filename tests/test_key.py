@@ -1,3 +1,4 @@
+import pytest
 from betterwinreg.key import RegistryKey, RegistryPath
 from betterwinreg.value import RegistryValue, RegistryValueType, Dword
 
@@ -55,6 +56,10 @@ class TestValues:
 
     def test_get(self):
         assert RegistryKey(r'Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer')['UserSignedIn'] == 1
+
+    def test_invalid_get(self):
+        with pytest.raises(KeyError):
+            _ = TEST_KEY_ROOT['InvalidKey']
 
     def test_set_value(self):
         key = RegistryKey(TEST_KEY_ROOT)
