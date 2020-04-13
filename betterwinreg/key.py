@@ -43,7 +43,6 @@ class RegistryKey:
     def parent(self) -> RegistryKey:
         return RegistryKey.from_hkey_and_path(self.hkey, self.path.parent)
 
-    @property
     def subkeys(self) -> List[RegistryKey]:
         from itertools import count
 
@@ -58,7 +57,6 @@ class RegistryKey:
         except OSError:
             return subkeys
 
-    @property
     def values(self) -> Dict[RegistryKey]:
         from itertools import count
 
@@ -120,7 +118,7 @@ class RegistryKey:
 
     def delete(self, recursive: bool = True) -> None:
         if recursive:
-            for subkey in self.subkeys:
+            for subkey in self.subkeys():
                 subkey.delete()
         winreg.DeleteKeyEx(self.hkey.id_, str(self.path))
 
