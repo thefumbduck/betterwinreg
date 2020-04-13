@@ -139,3 +139,6 @@ class TestKeyMisc:
 
     def test_repr(self):
         assert repr(RegistryKey(r'HKEY_CURRENT_USER\harmless_test')) == r"RegistryKey('HKEY_CURRENT_USER\harmless_test')"
+
+    def test_str(self):
+        assert str(RegistryKey(r'HKEY_CURRENT_USER\harmless_test')) == r'HKEY_CURRENT_USER\harmless_test'
