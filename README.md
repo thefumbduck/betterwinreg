@@ -2,6 +2,14 @@
 
 A sane way of working with the Windows registry.
 
+## Installing
+
+You can install this with pip:
+
+```
+pip install betterwinreg
+```
+
 ## Getting a RegistryKey instance
 
 To get a `RegistryKey` instance, simply do:
