@@ -1,3 +1,4 @@
+import pytest
 from betterwinreg.key import RegistryKey, RegistryPath
 from betterwinreg.value import RegistryValue, RegistryValueType, Dword
 
@@ -25,6 +26,14 @@ class TestKeyManipulation:
     def test_get(self):
         assert RegistryKey(r'Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer')['UserSignedIn'] == 1
 
+    def test_get_fail(self):
+        key = RegistryKey(self.SET_TEST_KEY_PATH)
+        if not key.is_key():
+            key.create()
+        with pytest.raises(KeyError):
+            key['InvalidKey']
+        key.delete()
+
     def test_create(self):
         key = RegistryKey(self.SET_TEST_KEY_PATH)
         if key.is_key():
@@ -45,7 +54,7 @@ class TestKeyManipulation:
         key.flush()
         del key['test']
         key.flush()
-        assert 'test' not in key
+        assert 'test' not in key.values()
 
     def test_default_value(self):
         key = RegistryKey(self.SET_TEST_KEY_PATH)
@@ -92,12 +101,6 @@ class TestKeyManipulation:
 
         assert len(key) == 10
 
-        key.delete()
-
-    def test_key_contains(self):
-        key = RegistryKey(self.SET_TEST_KEY_PATH)
-        key['test1'] = Dword(42)
-        assert 'test1' in key
         key.delete()
 
     def test_set_get_none(self):
