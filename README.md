@@ -34,46 +34,46 @@ my_wacky_value = key['WackyValue']
 You can also iterate though all the values a key has:
 
 ```python
-for name, value in key:
+for name, value in key.values().items():
     # do some more wacky stuff
 ```
-
-Since working with the registry often requires knowing what you're doing with types, values are `RegistryValue`s, a named tuple that contains a `value` and a `type_` attribute.
 
 For example, you would get the wallpaper path by doing:
 
 ```python
-wallpaper_path = RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop')['WallPaper']
+wallpaper_path = RegistryKey(r'HKEY_CURRENT_USER\Control Panel\Desktop')['WallPaper']
 ```
 
 ## Setting and deleting values
 
-Setting values works in the same way:
+Since registry types are different than Python types, you need to specify what type the registry value will be set to.
 
 ```python
-RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop')['WallPaper'] = r'D:\Pictures\wallpaper.png'
-del RegistryKey('HKEY_CLASSES_ROOT\Directory\Shell\git_shell')
+from betterwinreg.value import Sz
+RegistryKey(r'HKEY_CURRENT_USER\Control Panel\Desktop')['WallPaper'] = Sz(r'D:\Pictures\wallpaper.png')
+```
+
+To delete a value, you can use `del`:
+
+```python
+del RegistryKey(r'HKEY_CLASSES_ROOT\Directory\Shell\git_shell')['WallPaper']
 ```
 
 ## Navigating through the registry
 
-The main ways to move through the registry are using the `subkeys` and `parent` properties, and concatenating in a Path-like way.
+The main ways to move through the registry are using `subkeys()` and `parent`, and concatenating in a Path-like way.
 
 ```python
->>> RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop').parent
+>>> RegistryKey(r'HKEY_CURRENT_USER\Control Panel\Desktop').parent
 RegistryKey('HKEY_CURRENT_USER\Control Panel')
-```
 
-`subkeys` is a generator, so if you need to print them or iterate over them more than once, you need to convert them to a list:
-
-```python
->>> list(RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop').subkeys)
-[RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop\Colors'), RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics'), RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop\MuiCached')]
+>>> RegistryKey(r'HKEY_CURRENT_USER\Control Panel\Desktop').subkeys()
+[RegistryKey(r'HKEY_CURRENT_USER\Control Panel\Desktop\Colors'), RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics'), RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop\MuiCached')]
 ```
 
 You can also join `RegistryKey`s in a `Path`-like manner:
 
 ```python
->>> RegistryKey('HKEY_CURRENT_USER\Control Panel') / 'Desktop'
+>>> RegistryKey(r'HKEY_CURRENT_USER\Control Panel') / 'Desktop'
 RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop')
 ```
