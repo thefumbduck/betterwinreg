@@ -157,11 +157,14 @@ class RegistryKey:
         return True
 
     def __getitem__(self, key: str) -> RegistryValue:
-        self.ensure_handle_exists(True)
-        data = winreg.QueryValueEx(self.handle, key)
-        value = data[self.QueryValueReturnMembers.VALUE]
-        type_ = RegistryValueType(data[self.QueryValueReturnMembers.TYPE])
-        return get_registry_instance(value, type_)
+        try:
+            self.ensure_handle_exists(True)
+            data = winreg.QueryValueEx(self.handle, key)
+            value = data[self.QueryValueReturnMembers.VALUE]
+            type_ = RegistryValueType(data[self.QueryValueReturnMembers.TYPE])
+            return get_registry_instance(value, type_)
+        except FileNotFoundError as e:
+            raise KeyError from e
 
     def __setitem__(self, key: str, value: Union[RegistryValue, None]) -> None:
         if not self.is_key():
