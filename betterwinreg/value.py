@@ -24,10 +24,13 @@ class RegistryValue:
     winreg_type: RegistryValueType = None
 
     def __repr__(self) -> str:
-        return f"{type(self).__name__}({str(self)})"
+        return f"{type(self).__name__}({super().__repr__()})"
 
     def __str__(self) -> str:
-        return super().__repr__()
+        if isinstance(self, str):
+            return self
+        else:
+            return super().__repr__()
 
 
 def get_registry_instance(value: Union[int, str, bytearray], winreg_type: RegistryValueType) -> RegistryValue:
