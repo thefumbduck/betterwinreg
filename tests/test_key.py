@@ -56,7 +56,7 @@ class TestKeyManipulation:
 
         del key.default_value
         assert not key.has_default_value()
-        assert '' not in key.values
+        assert '' not in key.values()
 
         key.delete()
 
@@ -77,7 +77,7 @@ class TestKeyManipulation:
             key[f'test{i}'] = Dword(i)
         key.flush()
 
-        values = key.values
+        values = key.values()
         assert len(values) > 0
         for name, value in values.items():
             assert re.match(r'test([0-9])+', name) and isinstance(value, int)
@@ -127,7 +127,7 @@ class TestKeyNavigation:
         (key / 'test1').create()
         (key / 'test2').create()
 
-        assert len(list(key.subkeys)) == 2
+        assert len(key.subkeys()) == 2
 
         key.delete()
 
