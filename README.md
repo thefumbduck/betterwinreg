@@ -75,7 +75,7 @@ The main ways to move through the registry are using `subkeys()` and `parent`, a
 RegistryKey('HKEY_CURRENT_USER\\Control Panel')
 
 >>> RegistryKey(r'HKEY_CURRENT_USER\Control Panel\Desktop').subkeys()
-[RegistryKey(r'HKEY_CURRENT_USER\Control Panel\Desktop\Colors'), RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics'), RegistryKey('HKEY_CURRENT_USER\Control Panel\Desktop\MuiCached')]
+[RegistryKey('HKEY_CURRENT_USER\\Control Panel\\Desktop\\Colors'), RegistryKey('HKEY_CURRENT_USER\\Control Panel\\Desktop\\WindowMetrics'), RegistryKey('HKEY_CURRENT_USER\\Control Panel\\Desktop\\MuiCached')]
 ```
 
 You can also join `RegistryKey`s in a `Path`-like manner:
