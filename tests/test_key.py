@@ -137,6 +137,29 @@ class TestKeyNavigation:
 
         key.delete()
 
+    def test_walk(self):
+        key = RegistryKey(r'HKCU\harmless_key')
+        if not key.is_key():
+            key.create()
+
+        (key / 'test1').create()
+        (key / 'test1/test11').create()
+        (key / 'test1/test12').create()
+        (key / 'test2').create()
+        (key / 'test2/test21').create()
+
+        walk_results = list(key.walk())
+        expected_results = [
+            (key, ['test1', 'test2']),
+            (key / 'test1', ['test11', 'test12']),
+            (key / 'test2', ['test21']),
+        ]
+
+        for actual, expected in zip(walk_results, expected_results):
+            assert actual == expected
+
+        key.delete()
+
 
 class TestKeyMisc:
 
