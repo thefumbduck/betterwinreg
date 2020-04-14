@@ -109,6 +109,24 @@ class TestKeyManipulation:
         assert key['TestNone'] is None
         key.delete()
 
+    def test_copy(self):
+        key = RegistryKey(r'HKCU\harmless_key')
+        if not key.is_key():
+            key.create()
+
+        key['valuetest'] =  Dword(7)
+        (key / 'test1').create()
+        (key / 'test1')['valuetest'] = Dword(42)
+
+        new_key = key.parent / 'harmless2'
+        key.copy(new_key)
+
+        assert new_key['valuetest'] == 7
+        assert (new_key / 'test1')['valuetest'] == 42
+
+        key.delete()
+        new_key.delete()
+
 
 class TestKeyNavigation:
 
