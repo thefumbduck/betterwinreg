@@ -145,16 +145,22 @@ class RegistryKey:
         if self == to:
             return
 
-        for root, names in self.walk():
-            for key_name in names:
-                subkey = root / key_name
+        to.create()
+        self._copy_values(self, to)
 
-                new_path = RegistryPath().joinpath(*(to.path.parts + subkey.path.parts[len(self.path.parts):]))
-                new_key = RegistryKey.from_hkey_and_path(to.hkey, new_path)
-                new_key.create()
+        if recursive:
+            for root, names in self.walk():
+                for key_name in names:
+                    subkey = root / key_name
+                    new_path = RegistryPath().joinpath(*(to.path.parts + subkey.path.parts[len(self.path.parts):]))
+                    new_key = RegistryKey.from_hkey_and_path(to.hkey, new_path)
+                    new_key.create()
+                    self._copy_values(subkey, new_key)
 
-                for name, value in subkey.values().items():
-                    new_key[name] = value
+    @staticmethod
+    def _copy_values(from_: RegistryKey, to: RegistryKey) -> None:
+        for name, value in from_.values().items():
+            to[name] = value
 
     def _make_handle(self, readonly: bool = True) -> winreg.HKEYType:
         access = winreg.KEY_READ if readonly else winreg.KEY_ALL_ACCESS
