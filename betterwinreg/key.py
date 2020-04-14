@@ -36,6 +36,10 @@ class RegistryKey:
     _is_handle_readonly: bool = True
 
     @property
+    def name(self) -> str:
+        return self.path.name
+
+    @property
     def full_path(self) -> RegistryPath:
         return RegistryPath(self.hkey.name) / self.path
 
