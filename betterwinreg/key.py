@@ -36,6 +36,10 @@ class RegistryKey:
     _is_handle_readonly: bool = True
 
     @property
+    def name(self) -> str:
+        return self.path.name
+
+    @property
     def full_path(self) -> RegistryPath:
         return RegistryPath(self.hkey.name) / self.path
 
@@ -112,6 +116,14 @@ class RegistryKey:
                 subkeys.append(key)
         except OSError:
             return subkeys
+
+    def walk(self) -> Iterator[RegistryKey, List[str]]:
+        subkeys = self.subkeys()
+        yield self, [subkey.name for subkey in subkeys]
+        for subkey in subkeys:
+            for root, names in subkey.walk():
+                if names:
+                    yield root, names
 
     def values(self) -> Dict[RegistryKey]:
         from itertools import count
