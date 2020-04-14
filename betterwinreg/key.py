@@ -117,6 +117,14 @@ class RegistryKey:
         except OSError:
             return subkeys
 
+    def walk(self) -> Iterator[RegistryKey, List[str]]:
+        subkeys = self.subkeys()
+        yield self, [subkey.name for subkey in subkeys]
+        for subkey in subkeys:
+            for root, names in subkey.walk():
+                if names:
+                    yield root, names
+
     def values(self) -> Dict[RegistryKey]:
         from itertools import count
 
