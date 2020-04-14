@@ -122,6 +122,9 @@ class TestKeyNavigation:
         assert RegistryKey(r'HKEY_CURRENT_USER\harmless_test\subkey').parent == RegistryKey(r'HKEY_CURRENT_USER\harmless_test')
         assert RegistryKey(r'HKEY_CURRENT_USER\harmless_test').parent == RegistryKey(r'HKEY_CURRENT_USER')
 
+    def test_key_name(self):
+        assert RegistryKey(r'HKCU\test').name == 'test'
+
     def test_subkeys(self):
         key = RegistryKey(r'HKEY_CURRENT_USER\harmless_key')
         if not key.is_key():
