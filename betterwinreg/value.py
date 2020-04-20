@@ -38,10 +38,10 @@ class RegistryValue:
 def get_registry_instance(value: Union[int, str, bytearray], winreg_type: RegistryValueType) -> RegistryValue:
     """
 
-    :param value: Union[int: 
-    :param str: 
-    :param bytearray]: 
-    :param winreg_type: RegistryValueType: 
+    :param value: Union[int:
+    :param str:
+    :param bytearray]:
+    :param winreg_type: RegistryValueType:
 
     """
     if value is None:

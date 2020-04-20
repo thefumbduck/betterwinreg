@@ -66,7 +66,7 @@ class RegistryKey:
     def default_value(self, value: RegistryValue) -> None:
         """
 
-        :param value: RegistryValue: 
+        :param value: RegistryValue:
 
         """
         self[''] = value
@@ -94,8 +94,8 @@ class RegistryKey:
     def from_hkey_and_path(hkey: Hkey, path: RegistryPath) -> RegistryKey:
         """
 
-        :param hkey: Hkey: 
-        :param path: RegistryPath: 
+        :param hkey: Hkey:
+        :param path: RegistryPath:
 
         """
         key = RegistryKey()
@@ -179,7 +179,7 @@ class RegistryKey:
     def copy(self, to: RegistryKey, recursive: bool = True) -> None:
         """
 
-        :param to: RegistryKey: 
+        :param to: RegistryKey:
         :param recursive: bool:  (Default value = True)
 
         """
@@ -201,7 +201,7 @@ class RegistryKey:
     def rename(self, to: RegistryKey, recursive: bool = True) -> RegistryKey:
         """
 
-        :param to: RegistryKey: 
+        :param to: RegistryKey:
         :param recursive: bool:  (Default value = True)
 
         """
@@ -209,8 +209,8 @@ class RegistryKey:
         def is_subpath(root: PurePath, sub: PurePath) -> bool:
             """
 
-            :param root: PurePath: 
-            :param sub: PurePath: 
+            :param root: PurePath:
+            :param sub: PurePath:
 
             """
             try:
@@ -230,8 +230,8 @@ class RegistryKey:
     def _copy_values(from_: RegistryKey, to: RegistryKey) -> None:
         """
 
-        :param from_: RegistryKey: 
-        :param to: RegistryKey: 
+        :param from_: RegistryKey:
+        :param to: RegistryKey:
 
         """
         for name, value in from_.values().items():

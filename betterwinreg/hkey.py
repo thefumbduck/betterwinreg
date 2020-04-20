@@ -31,7 +31,7 @@ class Hkey:
     def get_full_name(name: str) -> str:
         """
 
-        :param name: str: 
+        :param name: str:
 
         """
         for names in HKEY_IDS.keys():
@@ -42,7 +42,7 @@ class Hkey:
     def find_id(name: str) -> int:
         """
 
-        :param name: str: 
+        :param name: str:
 
         """
         for names, id_ in HKEY_IDS.items():
