@@ -166,7 +166,7 @@ class RegistryKey:
                 return False
             return True
 
-        if not is_subpath(self.path, to.path):
+        if is_subpath(self.path, to.path):
             raise ValueError("Can't rename a path to a subpath of the original")
 
         self.copy(to, recursive=recursive)
