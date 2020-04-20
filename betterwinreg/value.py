@@ -5,6 +5,7 @@ from typing import Union, List, Type
 
 # Manually write these to have autocomplete
 class RegistryValueType(IntEnum):
+    """ """
     BINARY = winreg.REG_BINARY
     DWORD = winreg.REG_DWORD
     DWORD_BIG_ENDIAN = winreg.REG_DWORD_BIG_ENDIAN
@@ -20,6 +21,7 @@ class RegistryValueType(IntEnum):
 
 
 class RegistryValue:
+    """ """
 
     winreg_type: RegistryValueType = None
 
@@ -34,6 +36,14 @@ class RegistryValue:
 
 
 def get_registry_instance(value: Union[int, str, bytearray], winreg_type: RegistryValueType) -> RegistryValue:
+    """
+
+    :param value: Union[int: 
+    :param str: 
+    :param bytearray]: 
+    :param winreg_type: RegistryValueType: 
+
+    """
     if value is None:
         return None
 
@@ -45,50 +55,62 @@ def get_registry_instance(value: Union[int, str, bytearray], winreg_type: Regist
 
 
 class Binary(RegistryValue, bytearray):
+    """ """
     winreg_type: RegistryValueType = RegistryValueType.BINARY
 
 
 class Dword(RegistryValue, int):
+    """ """
     winreg_type: RegistryValueType = RegistryValueType.DWORD
 
 
 class DwordBigEndian(RegistryValue, bytearray):
+    """ """
     winreg_type: RegistryValueType = RegistryValueType.DWORD_BIG_ENDIAN
 
 
 class Qword(RegistryValue, int):
+    """ """
     winreg_type: RegistryValueType = RegistryValueType.QWORD
 
 
 class Sz(RegistryValue, str):
+    """ """
     winreg_type: RegistryValueType = RegistryValueType.SZ
 
 
 class ExpandSz(RegistryValue, str):
+    """ """
     winreg_type: RegistryValueType = RegistryValueType.EXPAND_SZ
 
 
 class MultiSz(RegistryValue, List[str]):
+    """ """
     winreg_type: RegistryValueType = RegistryValueType.MULTI_SZ
 
 
 class Link(RegistryValue, bytearray):
+    """ """
     winreg_type: RegistryValueType = RegistryValueType.LINK
 
 
 class ResourceList(RegistryValue, bytearray):
+    """ """
     winreg_type: RegistryValueType = RegistryValueType.RESOURCE_LIST
 
 
 class FullResourceDescriptor(RegistryValue, bytearray):
+    """ """
     winreg_type: RegistryValueType = RegistryValueType.FULL_RESOURCE_DESCRIPTOR
 
 
 class ResourceRequirementsList(RegistryValue, bytearray):
+    """ """
     winreg_type: RegistryValueType = RegistryValueType.RESOURCE_REQUIREMENTS_LIST
 
 
 def get_registry_value_types() -> List[Type[RegistryValue]]:
+    """ """
     import sys, inspect
 
     this_module = sys.modules[__name__]

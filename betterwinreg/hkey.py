@@ -16,6 +16,7 @@ HKEY_IDS = {
 
 
 class Hkey:
+    """ """
 
     name: str
     id_: int
@@ -28,12 +29,22 @@ class Hkey:
 
     @staticmethod
     def get_full_name(name: str) -> str:
+        """
+
+        :param name: str: 
+
+        """
         for names in HKEY_IDS.keys():
             if name in names:
                 return names[0]
 
     @staticmethod
     def find_id(name: str) -> int:
+        """
+
+        :param name: str: 
+
+        """
         for names, id_ in HKEY_IDS.items():
             if name in names:
                 return id_

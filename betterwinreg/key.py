@@ -10,22 +10,27 @@ from betterwinreg.value import RegistryValue, RegistryValueType, get_registry_in
 
 
 class RegistryPath(PureWindowsPath):
+    """ """
     pass
 
 
 class RegistryKey:
+    """ """
 
     class EnumValueReturnMembers(IntEnum):
+        """ """
         NAME = 0
         VALUE = 1
         TYPE = 2
 
     class QueryInfoReturnMembers(IntEnum):
+        """ """
         SUBKEYS_AMOUNT = 0
         VALUES_AMOUNT = 1
         LAST_MODIFICATION = 2
 
     class QueryValueReturnMembers(IntEnum):
+        """ """
         VALUE = 0
         TYPE = 1
 
@@ -37,26 +42,36 @@ class RegistryKey:
 
     @property
     def name(self) -> str:
+        """ """
         return self.path.name
 
     @property
     def full_path(self) -> RegistryPath:
+        """ """
         return RegistryPath(self.hkey.name) / self.path
 
     @property
     def parent(self) -> RegistryKey:
+        """ """
         return RegistryKey.from_hkey_and_path(self.hkey, self.path.parent)
 
     @property
     def default_value(self) -> RegistryValue:
+        """ """
         return self['']
 
     @default_value.setter
     def default_value(self, value: RegistryValue) -> None:
+        """
+
+        :param value: RegistryValue: 
+
+        """
         self[''] = value
 
     @default_value.deleter
     def default_value(self) -> None:
+        """ """
         del self['']
 
     def __init__(self, path: Union[str, RegistryPath] = None) -> None:
@@ -75,12 +90,19 @@ class RegistryKey:
 
     @staticmethod
     def from_hkey_and_path(hkey: Hkey, path: RegistryPath) -> RegistryKey:
+        """
+
+        :param hkey: Hkey: 
+        :param path: RegistryPath: 
+
+        """
         key = RegistryKey()
         key.hkey = hkey
         key.path = path
         return key
 
     def is_key(self) -> bool:
+        """ """
         try:
             _ = self._make_handle(True)
         except FileNotFoundError:
@@ -88,22 +110,31 @@ class RegistryKey:
         return True
 
     def create(self) -> None:
+        """ """
         winreg.CreateKeyEx(self.hkey.id_, str(self.path), 0)
 
     def delete(self, recursive: bool = True) -> None:
+        """
+
+        :param recursive: bool:  (Default value = True)
+
+        """
         if recursive:
             for subkey in self.subkeys():
                 subkey.delete()
         winreg.DeleteKeyEx(self.hkey.id_, str(self.path))
 
     def flush(self) -> None:
+        """ """
         self._ensure_handle_exists(False)
         winreg.FlushKey(self._handle)
 
     def has_default_value(self) -> bool:
+        """ """
         return '' in self.values()
 
     def subkeys(self) -> List[RegistryKey]:
+        """ """
         from itertools import count
 
         self._ensure_handle_exists(True)
@@ -118,6 +149,7 @@ class RegistryKey:
             return subkeys
 
     def walk(self) -> Iterator[RegistryKey, List[str]]:
+        """ """
         subkeys = self.subkeys()
         yield self, [subkey.name for subkey in subkeys]
         for subkey in subkeys:
@@ -126,6 +158,7 @@ class RegistryKey:
                     yield root, names
 
     def values(self) -> Dict[RegistryKey]:
+        """ """
         from itertools import count
 
         self._ensure_handle_exists(True)
@@ -142,6 +175,12 @@ class RegistryKey:
             return values
 
     def copy(self, to: RegistryKey, recursive: bool = True) -> None:
+        """
+
+        :param to: RegistryKey: 
+        :param recursive: bool:  (Default value = True)
+
+        """
         if self == to:
             return
 
@@ -158,8 +197,20 @@ class RegistryKey:
                     self._copy_values(subkey, new_key)
 
     def rename(self, to: RegistryKey, recursive: bool = True) -> RegistryKey:
+        """
+
+        :param to: RegistryKey: 
+        :param recursive: bool:  (Default value = True)
+
+        """
 
         def is_subpath(root: PurePath, sub: PurePath) -> bool:
+            """
+
+            :param root: PurePath: 
+            :param sub: PurePath: 
+
+            """
             try:
                 _ = to.path.relative_to(self.path)
             except ValueError:
@@ -175,14 +226,30 @@ class RegistryKey:
 
     @staticmethod
     def _copy_values(from_: RegistryKey, to: RegistryKey) -> None:
+        """
+
+        :param from_: RegistryKey: 
+        :param to: RegistryKey: 
+
+        """
         for name, value in from_.values().items():
             to[name] = value
 
     def _make_handle(self, readonly: bool = True) -> winreg.HKEYType:
+        """
+
+        :param readonly: bool:  (Default value = True)
+
+        """
         access = winreg.KEY_READ if readonly else winreg.KEY_ALL_ACCESS
         return winreg.OpenKeyEx(self.hkey.id_, str(self.path), 0, access)
 
     def _ensure_handle_exists(self, readonly: bool = True) -> None:
+        """
+
+        :param readonly: bool:  (Default value = True)
+
+        """
         if not self._handle or (not readonly and self._is_handle_readonly):
             self._handle = self._make_handle(readonly)
         self._is_handle_readonly = readonly
