@@ -131,6 +131,10 @@ class TestKeyManipulation:
         key = RegistryKey(r'HKCU\harmless_key')
         key2 = RegistryKey(r'HKCU\harmless2')
 
+        key['valuetest'] =  Dword(7)
+        (key / 'test1').create()
+        (key / 'test1')['valuetest'] = Dword(42)
+
         key.rename(key2)
 
         assert not key.is_key()
