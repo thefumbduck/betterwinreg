@@ -10,7 +10,9 @@ from betterwinreg.value import RegistryValue, RegistryValueType, get_registry_in
 
 
 class RegistryPath(PureWindowsPath):
-    """ """
+    """
+    Path that represents the path to a RegistryKey, without the HKEY.
+    """
     pass
 
 
