@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import winreg
 from enum import IntEnum
-from pathlib import PureWindowsPath
+from pathlib import PurePath, PureWindowsPath
 from typing import Any, Iterator, List, Dict, Union
 
 from betterwinreg.hkey import Hkey
@@ -156,6 +156,22 @@ class RegistryKey:
                     new_key = RegistryKey.from_hkey_and_path(to.hkey, new_path)
                     new_key.create()
                     self._copy_values(subkey, new_key)
+
+    def rename(self, to: RegistryKey, recursive: bool = True) -> RegistryKey:
+
+        def is_subpath(root: PurePath, sub: PurePath) -> bool:
+            try:
+                _ = to.path.relative_to(self.path)
+            except ValueError:
+                return False
+            return True
+
+        if is_subpath(self.path, to.path):
+            raise ValueError("Can't rename a path to a subpath of the original")
+
+        self.copy(to, recursive=recursive)
+        self.delete()
+        return to
 
     @staticmethod
     def _copy_values(from_: RegistryKey, to: RegistryKey) -> None:
