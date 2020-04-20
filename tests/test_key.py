@@ -127,6 +127,20 @@ class TestKeyManipulation:
         key.delete()
         new_key.delete()
 
+    def test_rename(self):
+        key = RegistryKey(r'HKCU\harmless_key')
+        key2 = RegistryKey(r'HKCU\harmless2')
+
+        key.rename(key2)
+
+        assert not key.is_key()
+        assert key2.is_key()
+
+        with pytest.raises(ValueError):
+            key2.rename(key2 / 'subkey')
+
+        key2.delete()
+
 
 class TestKeyNavigation:
 
